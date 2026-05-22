@@ -24,6 +24,7 @@ public :
 
 	void startBattle();
 
-	void displayInventory(Character* character);
+	//필요 없는 함수
+	/*void displayInventory(Character* character);*/
 
 };
