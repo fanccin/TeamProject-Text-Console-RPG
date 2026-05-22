@@ -1,4 +1,6 @@
 #include "Inventory.h"
+#include "HealthPotion.h"
+#include "AttackBoost.h"
 #include <algorithm>
 
 using namespace std;
@@ -10,10 +12,20 @@ Inventory::~Inventory() {
 	items_.clear();
 }
 
-void Inventory::AddItem(Item* item) {
-	if (item == nullptr) return;
-	items_.push_back(item);
-	std::cout << "[" << item->getName() << "]를 인벤토리에 추가했습니다." << std::endl;
+void Inventory::AddItem(std::string itemType, std::string name, int value) {
+	Item* CreatedItem = nullptr;
+
+	if (itemType == "Health") {
+		CreatedItem = new HealthPotion(name, value);
+	}
+	else if (itemType == "Attack") {
+		CreatedItem = new AttackBoost(name, value);
+	}
+	if (CreatedItem == nullptr) {
+		std::cout << "[에러] 알 수 없는 아이템 타입입니다: " << itemType << std::endl;
+		return;
+	}
+	items_.push_back(CreatedItem);
 }
 
 void Inventory::RemoveItem(int index) {
@@ -25,8 +37,7 @@ void Inventory::RemoveItem(int index) {
 
 void Inventory::UseItem(int index, Character* character) {
 	if (index >= 0 && index < static_cast<int>(items_.size())) {
-		// ⭕ 종류를 묻지도 따지지도 않고 부모의 약속(use)만 실행
-		// C++ 컴퓨터가 알아서 진짜 알맹이(HealthPotion 혹은 AttackBoost)를 찾아갑니다.
+		// C++ 컴퓨터가 알아서 (HealthPotion 혹은 AttackBoost)를 찾아갑니다.
 		items_[index]->use(character);
 
 		// 소모품이므로 사용 후 가방에서 제거 및 메모리 해제
@@ -46,7 +57,7 @@ void Inventory::ShowInventory() const {
 		return;
 	}
 	for (size_t i = 0; i < items_.size(); ++i) {
-		std::cout << "[" << i + 1 << "] " << items_[i]->getName() << std::endl;
+		std::cout << "[" << i+1 << "] " << items_[i]->getName() << std::endl;
 	}
 	std::cout << "=============================" << std::endl;
 }

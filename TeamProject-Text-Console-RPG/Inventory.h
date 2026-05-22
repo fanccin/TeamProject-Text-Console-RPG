@@ -11,7 +11,7 @@ private:
 public:
     ~Inventory();
 
-    void AddItem(Item* item);               // 가방에 아이템 추가
+    void AddItem(std::string itemType, std::string name, int value);              // 가방에 아이템 추가
     void RemoveItem(int index);           // 가방에서 아이템 영구 제거 (버리기/판매)
     void UseItem(int index, Character* character); // 가상 함수 버프 발동!
 
