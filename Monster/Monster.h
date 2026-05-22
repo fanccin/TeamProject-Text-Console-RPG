@@ -1,84 +1,43 @@
 #pragma once
 #include <string>
-
-using namespace std;
-
-// [인터페이스] Monster
+#include <iostream>
 
 class Monster {
-public:
-    virtual ~Monster() = default; // 가상 소멸자
-
-    virtual string getName() const = 0;
-    virtual int getHealth() const = 0;
-    virtual int getAttack() const = 0;
-    virtual int getDefence() const = 0;
-    virtual void takeDamage(int damage) = 0;
-};
-
-
-// [구현 클래스 선언] Goblin, Orc, Troll, Slime
-
-class Goblin : public Monster {
-private:
-    string name;
+protected:
+    std::string name;
     int health;
     int attack;
     int defence;
 
 public:
-    Goblin(int level);
-    string getName() const override;
-    int getHealth() const override;
-    int getAttack() const override;
-    int getDefence() const override;
-    void takeDamage(int damage) override;
+    virtual ~Monster() = default;
+
+    std::string getName() const { return name; }
+    int getHealth() const { return health; }
+    int getAttack() const { return attack; }
+    int getDefence() const { return defence; }
+
+    virtual void takeDamage(int damage) {
+        int actualDamage = damage - defence;
+        if (actualDamage < 0) actualDamage = 0;
+
+        health -= actualDamage;
+        if (health < 0) health = 0;
+
+        std::cout << name << "이(가) " << actualDamage << "의 피해를 입었습니다! (남은 체력: " << health << ")" << std::endl;
+    }
 };
 
-class Orc : public Monster {
-private:
-    string name;
-    int health;
-    int attack;
-    int defence;
-
-public:
-    Orc(int level);
-    string getName() const override;
-    int getHealth() const override;
-    int getAttack() const override;
-    int getDefence() const override;
-    void takeDamage(int damage) override;
+class Goblin : public Monster { 
+    public: Goblin(int level); 
 };
 
-class Troll : public Monster {
-private:
-    string name;
-    int health;
-    int attack;
-    int defence;
-
-public:
-    Troll(int level);
-    string getName() const override;
-    int getHealth() const override;
-    int getAttack() const override;
-    int getDefence() const override;
-    void takeDamage(int damage) override;
+class Orc : public Monster { 
+    public: Orc(int level); 
 };
-
-class Slime : public Monster {
-private:
-    string name;
-    int health;
-    int attack;
-    int defence;
-
-public:
-    Slime(int level);
-    string getName() const override;
-    int getHealth() const override;
-    int getAttack() const override;
-    int getDefence() const override;
-    void takeDamage(int damage) override;
+class Troll : public Monster { 
+    public: Troll(int level); 
+};
+class Slime : public Monster { 
+    public: Slime(int level); 
 };
