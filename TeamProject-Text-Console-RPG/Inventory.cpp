@@ -46,7 +46,7 @@ void Inventory::ShowInventory() const {
 		return;
 	}
 	for (size_t i = 0; i < items_.size(); ++i) {
-		std::cout << "[" << i << "] " << items_[i]->getName() << std::endl;
+		std::cout << "[" << i + 1 << "] " << items_[i]->getName() << std::endl;
 	}
 	std::cout << "=============================" << std::endl;
 }
