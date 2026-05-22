@@ -10,20 +10,25 @@ void LogManager::PrintCharacterInfo(const string& playerName, int level, int hp,
         << ", 체력: " << hp << ", 공격력: " << attack << endl;
 }
 
-// 1.몬스터 등장, 공격 및 피해 로그 정의
-void LogManager::PrintMonsterAppearAndAttack(const string& monsterName, int monsterMaxHp, int monsterAtk,
-    const string& attackerName, const string& targetName,
-    int damage,  int currentHp)
+// 1.몬스터 등장
+void LogManager::PrintMonsterAppear(const string& monsterName, int monsterMaxHp, int monsterAtk)
 {
-    // 몬스터 등장 문구 출력
     cout << "몬스터 " << monsterName << " 등장! 체력: " << monsterMaxHp << ", 공격력: " << monsterAtk << endl;
-
-    // 음수 체력 방지 보정
+}
+// 전투/피해
+void LogManager::PrintAttackLog(const string& attackerName, const string& targetName, int damage, int currentHp)
+{
     int displayCurrentHp = (currentHp < 0) ? 0 : currentHp;
 
-    // 공격 및 피해 로그를 곧바로 이어서 출력
     cout << attackerName << "가 " << targetName << "을 공격합니다! "
         << targetName << " 체력: " << displayCurrentHp << endl;
+
+    if (displayCurrentHp == 0)
+    {
+        cout << targetName << "가 사망했습니다. ";
+        if (targetName != "Goblin" && targetName != "Dragon") cout << "게임 오버!" << endl;
+        else cout << endl;
+    }
 }
 
 //2. 체력 +50(포션) : 현재 체력을 50 회복 형태로 출력
