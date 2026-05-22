@@ -2,57 +2,105 @@
 
 #pragma once
 #include<string>
+#include<Inventory.h>
 
+//Level up 부분은 통합됨.
 
-void displayStatus();
-//void levelUp() //나중에 레벨업 받아서 가져오기.
-
-
-
-class Character //방어와 MP없음.
+class Character //과제 내용에서 방어와 MP 추가됨.
 {
-    public:
-    Character(std::string name, int level, int health, int maxhealth, int mp, int maxmp, int attack, int Exp, int maxExp);
-    //int gold는 필요하면 추가.
+public:
+    Character(std::string Name);
     
-    int getlevel();
-    void setlevel(int _level);
-    int gethealth();
-    void sethealth(int _health);
-    int getmaxhealth();
-    void setmaxhealth(int _maxhealth);
-    int getmp();
-    void setmp(int _mp);
-    int getmaxmp();
-    void setmaxmp(int _maxmp);
-    int getattack();
-    void setattack(int _attack);
+    std::string getName();
+    std::string getJob();    
+    int getLevel();
+    int getHealth();
+    int getMaxHealth();
+    int getMp();
+    int getMaxMp();
+    int getAttack();
+    int getDefense();
     int getExp();
-    void setExp(int _Exp);
-    int getmaxExp();
-    void setmaxExp(int _maxExp);
-//    int getgold(); //골드를 아이템에 넣을지 캐릭터에 넣을지 확인 
-//    void setgold(int _gold); //상점 시스템까지 생각하면 아이템?
+    int getMaxExp();
+    int getGold();
+    
+    void setLevel(int _level);
+    void setHealth(int _health);
+    void setMaxHealth(int _maxhealth);
+    void setMp(int _mp);
+    void setMaxMp(int _maxmp);
+    void setAttack(int _attack);
+    void setDefense(int _defense);
+    void setExp(int _exp);
+    void setMaxExp(int _maxExp);
+    void setGold(int _Gold);
     
     void GainExp(int amount);
+    
+    virtual ~Character() = default; //가상소멸자 - 전직 시 기본 
+    
+    void displayStatus();
 
     
-    
-    
-    
-    
-    
-    private:
+protected: //직업 선택 시 변수 변경.
     std::string name;
+    std::string job;
     int level; //레벨업 파트 받아서 가져오기.
     int health;
     int maxhealth;
     int mp;
     int maxmp;
     int attack;
-    int Exp;
-    int maxExp;
-//    int gold;
-    //vector<Item* > inventory; //아이템 파트 받아서 가져오기.
+    int defense;
+    int exp;
+    int maxexp;
+    int gold;
+    Inventory* inventory;
 };
 
+
+
+//각 직업
+
+class Warrior : public Character
+{
+public:
+    Warrior(std::string name);
+    
+//    void attack(Monster* monster) override;
+};
+
+
+class Magician : public Character
+{
+public:
+    Magician(std::string name);
+    
+//    void attack(Monster* monster) override;
+};
+
+
+class Thief : public Character
+{
+public:
+    Thief(std::string name);
+    
+//    void attack(Monster* monster) override;
+};
+
+
+class Archer : public Character
+{
+public:
+    Archer(std::string name);
+    
+//    void attack(Monster* monster) override;
+};
+
+
+//장비 장착
+// class Equip : public Character
+// {
+// public:
+//     Equip(int health, int maxhealth, int mp, int maxmp, int attack, int defense);
+// };
