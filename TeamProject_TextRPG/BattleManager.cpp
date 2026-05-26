@@ -8,6 +8,8 @@
 #include "Random.h"
 #include "Item.h"
 #include "ItemDrop.h"
+#include "LogManager.h"
+
 
 
 
@@ -28,9 +30,9 @@ void BattleManager::startBattle()
 	//캐릭터 레벨에 따른 몬스터 레벨 스케일링
 	Monster* monster = generateMonster(character->getLevel());
 
-	std::cout << "몬스터 [" << monster->getName() << "] 등장...\n";
 	//몬스터 정보 출력
-	displayMonsterStatus(monster);
+	LogManager::GetInstance().PrintMonsterAppear(monster->getName(), monster->getHealth(), monster->getAttack(), monster->getDefense());
+	
 	//노도핑 공격력 백업
 	int originalAttack = character->getAttack();
 
@@ -69,7 +71,7 @@ void BattleManager::startBattle()
 						continue;
 					}
 					if (choice == 0) {
-						character->displayStatus();
+						LogManager::GetInstance().PrintCharacterInfo(character);
 						continue;
 					}
 
@@ -87,24 +89,25 @@ void BattleManager::startBattle()
 		}
 		//기본 공격
 		else if (playerRoll <= 60) {
-			std::cout << "\n[" << monster->getName() << "]에게 기본 공격을 가합니다!\n";
-			monster->takeDamage(character->getAttack());
+			int damageType = 1;
+			int actualDamage = monster->takeDamage(character->getAttack());
+			LogManager::GetInstance().PrintAttackLog(monster->getName(), actualDamage, monster->getHealth(), damageType);
 		}
 		//스킬 사용
 		else if (playerRoll <= 90) {
-			std::cout << "\n[" << monster->getName() << "]에게 스킬 공격을 가합니다!\n";
-			monster->takeDamage(character->skillAttack());
+			int damageType = 2;
+			int actualDamage = monster->takeDamage(character->skillAttack());
+			LogManager::GetInstance().PrintAttackLog(monster->getName(), actualDamage, monster->getHealth(), damageType);
 		}
 		//치명타 공격(스킬 데미지 2배)
 		else {
-			std::cout << "치명타!!!\n";
-			std::cout << "\n[" << monster->getName() << "]에게 치명적인 공격을 가합니다!\n";
-			monster->takeDamage(character->skillAttack() * 2);
+			int damageType = 3;
+			int actualDamage = monster->takeDamage(character->skillAttack()*2);
+			LogManager::GetInstance().PrintAttackLog(monster->getName(), actualDamage, monster->getHealth(), damageType);
 		}
 
 		//몬스터 사망 시 전투 종료
 		if (monster->getHealth() <= 0) {
-			//logger.RecordKill(monster->getName());
 			break;
 		}
 
@@ -115,22 +118,18 @@ void BattleManager::startBattle()
 		//기본 공격
 		if (monsterRoll <= 90) {
 			{
-				int damage = (monster->getAttack() - character->getDefense());
-				if (damage <= 0) damage = 1;
-				character->setHealth(character->getHealth() - damage);
-				std::cout << "\n[" << monster->getName() << "]에게 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
-				std::cout << "남은 체력 : " << character->getHealth() << ")\n";
-
+				bool isCrit = false;
+				int actualDamage = character->takeDamage(monster->getAttack());
+				LogManager::GetInstance().PrintPlayerDamagedLog(monster->getName(), actualDamage, character->getHealth(), isCrit);
 			}
 		}
 		//치명타 공격(데미지 2배)
 		else {
-			int damage = (monster->getAttack() * 2 - character->getDefense());
-			character->setHealth(character->getHealth() - damage);
-			std::cout << monster->getName() << "이 공격을 준비합니다 ...\n";
-			std::cout << "치명타!!!\n";
-			std::cout << "\n[" << monster->getName() << "]에게 치명적인 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
-			std::cout << "남은 체력 : " << character->getHealth() << ")\n";
+			{
+			bool isCrit = true;
+			int actualDamage = character->takeDamage(monster->getAttack());
+			LogManager::GetInstance().PrintPlayerDamagedLog(monster->getName(), actualDamage, character->getHealth(), isCrit);
+			}
 		}
 
 	}
@@ -142,16 +141,16 @@ void BattleManager::startBattle()
 	//승리 시
 	if (character->getHealth() >= 0) {
 		{
-			std::cout << "\n 전투 승리! [" << monster->getName() << "]를 처치했습니다!\n";
-			std::cout << "=========================================\n";
+			//몬스터 처치 기록
+			LogManager::GetInstance().RecordKill(monster->getName());
 
-			// 보상 1: 경험치 50 고정 획득 (레벨업 연산은 캐릭터 내부 함수가 처리)
+			// 경험치 획득 로그
 			character->GainExp(50);
 
-			// 보상 2: 골드 10~20 범위 랜덤 획득
+			// 골드 10~20 범위 랜덤 획득 / 로그
 			int rewardGold = RandomMt19937<int>(10, 20);
 			character->setGold(character->getGold() + rewardGold);
-			std::cout << " 골드 +" << rewardGold << " G 획득! (현재 골드: " << character->getGold() << "G)\n";
+			LogManager::GetInstance().PrintGoldReward(rewardGold, character->getGold());
 
 			// 보상 3: 30% 확률로 랜덤 아이템 획득
 			ItemDrop item;
@@ -162,14 +161,4 @@ void BattleManager::startBattle()
 		}
 	}
 
-}
-
-void BattleManager::displayMonsterStatus(Monster* monster)
-{
-	std::cout << "\n========= [속성 상세정보] =========\n";
-	std::cout << " 이름     : " << monster->getName() << std::endl;
-	std::cout << " HP       : " << monster->getHealth() << std::endl;
-	std::cout << " 공격력   : " << monster->getAttack() << std::endl;
-	std::cout << " 방어력   : " << monster->getDefense() << std::endl;
-	std::cout << "===================================\n";
 }

@@ -7,14 +7,38 @@
 #include "Character.h"
 #include "Monster.h"
 #include "BattleManager.h"
+#include "LogManager.h"
 
 int main()
 {
 	std::cout << "===== 띵조 RPG =====\n";
 	std::cout << "플레이어의 이름을 알려주세요.\n";
+	std::cout << "이름 : ";
 
+	std::string rawInput;
 	std::string name;
-	std::cin >> name;
+
+	while (true) {
+		//한 줄 통째로 읽어옴
+		std::getline(std::cin, rawInput);
+
+		//입력받은 문자열에서 공백(스페이스바, 탭 등) 제거
+		name = "";
+		for (char c : rawInput) {
+			if (!std::isspace(static_cast<unsigned char>(c))) {
+				name += c;
+			}
+		}
+
+		//전부 공백일 경우 예외처리
+		if (name.empty()) {
+			std::cout << "이름은 최소 한 글자 이상 입력해야 합니다! 다시 입력해주세요.\n";
+			std::cout << "이름 : ";
+			continue;
+		}
+
+		break; // 완벽하게 필터링된 이름(`name`)을 가지고 루프 탈출!
+	}
 
 	// 전체 게임의 실행 여부를 제어하는 플래그
 	bool isGameRunning = true;
@@ -75,9 +99,9 @@ int main()
 
 		std::cout << "====================\n";
 		std::cout << "캐릭터가 생성되었습니다.\n\n\n";
-		character->displayStatus();
+		LogManager::GetInstance().PrintCharacterInfo(character);
 
-		// 승리 시 무한 전투 루프
+		// 캐릭터 생존 상태에서 무한 전투 루프
 		bool isCharacterAlive = true;
 
 		while (isCharacterAlive) {

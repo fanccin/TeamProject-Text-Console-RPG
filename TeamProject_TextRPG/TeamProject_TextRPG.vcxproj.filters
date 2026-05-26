@@ -48,6 +48,9 @@
     <ClCompile Include="ItemDrop.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="LogManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BattleManager.h">
@@ -68,6 +71,9 @@
     <ClInclude Include="Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="Armor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -81,6 +87,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ItemDrop.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="LogManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

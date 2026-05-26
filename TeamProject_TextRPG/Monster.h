@@ -17,14 +17,14 @@ public:
     int getAttack() const { return attack; }
     int getDefense() const { return defense; }
 
-    virtual void takeDamage(int damage) {
+    virtual int takeDamage(int damage) {
         int actualDamage = damage - defense;
         if (actualDamage < 0) actualDamage = 0;
 
         health -= actualDamage;
         if (health < 0) health = 0;
 
-        std::cout << name << "이(가) " << actualDamage << "의 피해를 입었습니다! (남은 체력: " << health << ")" << std::endl;
+        return actualDamage;
     }
 };
 

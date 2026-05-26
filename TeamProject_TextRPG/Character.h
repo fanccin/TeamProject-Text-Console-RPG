@@ -42,7 +42,7 @@ public:
 
     void displayStatus();
 
-    virtual void takeDamage(int damage);
+    int takeDamage(int damage);
 
     // 순수 가상 함수
     virtual int skillAttack() = 0;

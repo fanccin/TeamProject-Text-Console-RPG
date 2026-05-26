@@ -2,6 +2,7 @@
 #include <string>
 #include "Character.h"
 #include "Inventory.h"
+#include "LogManager.h"
 
 using namespace std;
 
@@ -14,8 +15,8 @@ Character::Character(std::string name)
     maxhealth = 200;
     mp = 50;
     maxmp = 50;
-    attack = 30;
-    defense = 30;
+    attack = 50;
+    defense = 50;
     gold = 0;
     exp = 0;
     maxexp = 100;
@@ -48,15 +49,15 @@ void Character::displayStatus()
     cout << "===================================\n" << endl;
 }
 
-void Character::takeDamage(int damage)
+int Character::takeDamage(int damage)
 {
     int actualDamage = damage - defense;
-    if (actualDamage < 0) actualDamage = 0;
+    if (actualDamage <= 0) actualDamage = 1;
 
     health -= actualDamage;
     if (health < 0) health = 0;
 
-    std::cout << name << "이(가) " << actualDamage << "의 피해를 입었습니다! (남은 체력: " << health << ")" << std::endl;
+    return actualDamage;
 }
 
 void Character::GainExp(int amount)
@@ -66,7 +67,7 @@ void Character::GainExp(int amount)
     int beforeHP = maxhealth;
     int beforeattack = attack;
 
-    cout << "\n -> 경험치 +" << amount << " 획득! (현재 경험치: " << exp << "/" << maxexp << ")\n";
+    LogManager::GetInstance().PrintExpReward(amount, exp, maxexp);
 
     while (exp >= maxexp && level < 10)
     {
@@ -85,15 +86,12 @@ void Character::GainExp(int amount)
 
     if (level > oldlevel)
     {
-        cout << "\n레벨업 조건 충족\n";
-        cout << "★☆★★☆★★☆★★☆★☆★★\n";
-        cout << "★☆★ LEVEL UP ★☆★\n";
-        cout << "★☆★★☆★★☆★★☆★☆★★\n";
-        cout << " -> Lv." << oldlevel << " -> Lv." << level << "\n";
-        cout << " -> HP +" << (maxhealth - beforeHP) << " 공격력 +" << (attack - beforeattack) << " 증가!\n";
-        cout << "\n스탯이 상승했습니다!\n";
-        cout << "HP : " << beforeHP << " -> " << maxhealth << "\n";
-        cout << "공격력 : " << beforeattack << " -> " << attack << "\n";
+        LogManager::GetInstance().PrintLevelUp(
+            oldlevel, level,
+            (maxhealth - beforeHP), (attack - beforeattack),
+            beforeHP, maxhealth,
+            beforeattack, attack
+        );
     }
 }
 

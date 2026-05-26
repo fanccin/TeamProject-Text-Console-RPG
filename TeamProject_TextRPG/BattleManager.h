@@ -24,9 +24,4 @@ public :
 
 	void startBattle();
 
-	void displayMonsterStatus(Monster* monster);
-
-	//필요 없는 함수
-	/*void displayInventory(Character* character);*/
-
 };

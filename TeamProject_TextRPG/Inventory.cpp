@@ -51,10 +51,10 @@ void Inventory::UseItem(int index, Character* character) {
         items_[targetIndex]->use(character);
         delete items_[targetIndex];
         items_.erase(items_.begin() + targetIndex);
-        std::cout << "[시스템] 아이템을 사용하고 가방에서 제거했습니다." << std::endl;
+        std::cout << "아이템을 사용하고 가방에서 제거했습니다 ..." << std::endl;
     }
     else {
-        std::cout << "올바르지 않은 가방 슬롯이거나 아이템이 없습니다." << std::endl;
+        std::cout << "올바르지 않은 가방 슬롯이거나 아이템이 없습니다 ..." << std::endl;
     }
 }
 
