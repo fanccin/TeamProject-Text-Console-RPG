@@ -145,7 +145,6 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemDrop.h" />
     <ClInclude Include="Monster.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
