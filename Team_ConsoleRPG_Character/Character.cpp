@@ -1,4 +1,4 @@
-//Characters.cpp
+//Character.cpp
 
 #include<iostream>
 #include<string>
@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//생성자
+//생성자 - 초기값은 여기서.
 Character::Character(std::string name)
 {
     //초기 능력치 레벨 1, 초기 체력 200, 공격력 30, 경험치 0으로 시작.
@@ -27,43 +27,19 @@ Character::Character(std::string name)
 
 
 
-std::string Character::getName() { return name; }
-std::string Character::getJob() { return job; }
-int Character::getLevel() { return level; }
-int Character::getHealth() { return health; }
-int Character::getMaxHealth() { return maxhealth; }
-int Character::getMp() { return mp; }
-int Character::getMaxMp() { return maxmp; }
-int Character::getAttack() { return attack; }
-int Character::getDefense() { return defense; }
-int Character::getExp() { return exp; }
-int Character::getMaxExp() { return maxexp; }
-int Character::getGold() { return gold; }
-
-void Character::setLevel(int _level) { level = _level; }
-void Character::setHealth(int _health) { health = _health; }
-void Character::setMaxHealth(int _maxhealth) { maxhealth = _maxhealth; }
-void Character::setMp(int _mp) { mp = _mp; }
-void Character::setMaxMp(int _maxmp) { maxmp = _maxmp; }
-void Character::setAttack(int _attack) { attack = _attack; }
-void Character::setDefense(int _defense) { defense = _defense; }
-void Character::setExp(int _exp) { exp = _exp; }
-void Character::setMaxExp(int _maxExp) { maxexp = _maxExp; }
-void Character::setGold(int _Gold) { gold = _Gold; }
-
-
 //스탯 출력
 void Character::displayStatus()
 {
     cout<< "속성 상세정보\n";
     cout<< " " << getName() << "\n";
-    cout<< " " << getLevel << " /10\n";
-    cout<< "S2 HP       " << getHealth <<"\n";
-    cout<< "MP        " << getMp <<"\n";
-    cout<< "X  공격력    " << getAttack <<"\n";
-    cout<< "[] 방어력    " << getDefense <<"\n";
-    cout<< "$  보유골드  " << getGold <<"\n";
+    cout<< " " << getLevel() << " /10\n";
+    cout<< "S2 HP       " << getHealth() <<"\n";
+    cout<< "MP        " << getMp() <<"\n";
+    cout<< "X  공격력    " << getAttack() <<"\n";
+    cout<< "[] 방어력    " << getDefense() <<"\n";
+    cout<< "$  보유골드  " << getGold() <<"\n";
 }
+//패치내역 : getter/setter 정리에 따라, get의 함수값으로 불러오기.
 
 //레벨 업
 void Character::GainExp(int amount)//경험치를 외부에서 받는다.
@@ -132,6 +108,13 @@ Warrior::Warrior(std::string name)
     cout << "스킬 습득!\n";
 }
 
+int Warrior::SkillAttack() //이미 멤버변수로 받아왔으니, attack을 매개변수로 받아올 필요 없음.
+{
+    int damage = attack*2;
+    
+    //std::cout << "\n[" << monster->getName() << "]에게 스킬 공격을 가합니다!\n";
+}
+
 
 Magician::Magician(std::string name)
     :Character(name)
@@ -145,6 +128,13 @@ Magician::Magician(std::string name)
     cout << "스킬 습득!\n";
 }
 
+int Magician::SkillAttack() //이미 멤버변수로 받아왔으니, attack을 매개변수로 받아올 필요 없음.
+{
+    int damage = attack*2;
+    
+    //std::cout << "\n[" << monster->getName() << "]에게 스킬 공격을 가합니다!\n";
+}
+
 Thief::Thief(std::string name)
     :Character(name)
 {
@@ -152,9 +142,16 @@ Thief::Thief(std::string name)
     this->health += 20;
     this->maxhealth += 20;
     this->attack += 20;
-    cout << "초보 탈락 전사 합격. (HP +20. 공격 +20.)\n";
+    cout << "초보 탈락 도적 합격. (HP +20. 공격 +20.)\n";
     cout << "공격 습득!\n";
     cout << "스킬 습득!\n";
+}
+
+int Thief::SkillAttack() //이미 멤버변수로 받아왔으니, attack을 매개변수로 받아올 필요 없음.
+{
+    int damage = attack*2;
+    
+    //std::cout << "\n[" << monster->getName() << "]에게 스킬 공격을 가합니다!\n";
 }
 
 
@@ -163,8 +160,16 @@ Archer::Archer(std::string name)
 {
     this->job = "Archer";
     this->attack *= 2;
-    cout << "초보 탈락 전사 궁수. (공격 2배.)\n";
+    cout << "초보 탈락 궁수 합격. (공격 2배.)\n";
     cout << "공격 습득!\n";
     cout << "스킬 습득!\n";
 }
 
+int Archer::SkillAttack() //이미 멤버변수로 받아왔으니, attack을 매개변수로 받아올 필요 없음.
+{
+    int damage = attack*2;
+    
+    return damage;
+    
+    //std::cout << "\n[" << monster->getName() << "]에게 스킬 공격을 가합니다!\n";
+}
