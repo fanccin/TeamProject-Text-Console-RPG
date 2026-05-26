@@ -13,6 +13,7 @@ private:
     ~LogManager() = default;
     
     // 2. 복사 생성자 및 대입 연산자 제거 (싱글톤 복사 방지)
+    // LogManager::GetInstance().함수명(...)
     LogManager(const LogManager& other) = delete;
     LogManager& operator=(const LogManager& other) = delete;
 

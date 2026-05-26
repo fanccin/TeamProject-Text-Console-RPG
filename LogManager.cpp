@@ -3,6 +3,8 @@
 
 using namespace std;
 
+// 로그호출 : LogManager::GetInstance().함수명(...)
+
 // 0. 캐릭터 생성 및 정보 출력 로그 정의
 void LogManager::PrintCharacterInfo(const string& playerName, int level, int hp, int attack)
 {
