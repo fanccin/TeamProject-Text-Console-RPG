@@ -15,6 +15,7 @@ public:
     void RemoveItem(int index);           // 가방에서 아이템 영구 제거 (버리기/판매)
     void UseItem(int index, Character* character); // 가상 함수 버프 발동!
 
+    void SortByPrice();
     int GetSize() const { return static_cast<int>(items_.size()); }
     void ShowInventory() const;           // 가방 목록 출력
 };

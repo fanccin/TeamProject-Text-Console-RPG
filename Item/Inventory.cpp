@@ -14,6 +14,10 @@ Inventory::~Inventory() {
 	items_.clear();
 }
 
+void Inventory::SortByPrice() {
+	std::sort(items_.begin(), items_.end(), compareByPrice);
+}
+
 void Inventory::AddItem(std::string itemType, std::string name, int value, int price) {
 	Item* CreatedItem = nullptr;
 
@@ -73,3 +77,4 @@ void Inventory::ShowInventory() const {
 	}
 	std::cout << "=============================" << std::endl;
 }
+
