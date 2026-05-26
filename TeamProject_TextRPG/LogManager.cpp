@@ -1,66 +1,137 @@
 ﻿#include <iostream>
 #include "LogManager.h"
+#include "Character.h"
 
 using namespace std;
 
 // 로그호출 : LogManager::GetInstance().함수명(...)
 
 // 0. 캐릭터 생성 및 정보 출력 로그 정의
-void LogManager::PrintCharacterInfo(const string& playerName, int level, int hp, int attack)
+void LogManager::PrintCharacterInfo(Character* character)
 {
-    cout << "캐릭터 " << playerName << " 생성 완료! 레벨: " << level
-        << ", 체력: " << hp << ", 공격력: " << attack << endl;
+    if (character == nullptr) return;
+
+    cout << "\n========= [ 캐릭터 정보 ] =========" << endl;
+    cout << " 이름     : " << character->getName() << endl;
+    cout << " 직업     : " << character->getJob() << endl;
+    cout << " 레벨     : " << character->getLevel() << " / 10" << endl;
+    cout << " HP       : " << character->getHealth() << " / " << character->getMaxHealth() << endl;
+    cout << " MP       : " << character->getMp() << " / " << character->getMaxMp() << endl;
+    cout << " 경험치   : " << character->getExp() << " / " << character->getMaxExp() << endl;
+    cout << " 공격력   : " << character->getAttack() << endl;
+    cout << " 방어력   : " << character->getDefense() << endl;
+    cout << " 보유골드 : " << character->getGold() << " G" << endl;
+    cout << "===================================\n" << endl;
 }
 
 // 1.몬스터 등장
-void LogManager::PrintMonsterAppear(const string& monsterName, int monsterMaxHp, int monsterAtk)
+void LogManager::PrintMonsterAppear(const string& monsterName, int monsterMaxHp, int monsterAtk, int monsterDef)
 {
-    cout << "몬스터 " << monsterName << " 등장! 체력: " << monsterMaxHp << ", 공격력: " << monsterAtk << endl;
+    std::cout << "몬스터 [" << monsterName << "] 등장...\n\n";
+
+    std::cout << "\n========= [ 몬스터 정보 ] =========\n";
+    std::cout << " 이름     : " << monsterName << std::endl;
+    std::cout << " HP       : " << monsterMaxHp << std::endl;
+    std::cout << " 공격력   : " << monsterAtk << std::endl;
+    std::cout << " 방어력   : " << monsterDef << std::endl;
+    std::cout << "===================================\n";
 }
-// 전투/피해
-void LogManager::PrintAttackLog(const string& attackerName, const string& targetName, int damage, int currentHp)
+// 2. 플레이어가 몬스터 공격
+// damageType 1 = 기본, 2 = 스킬, 3 = 치명타
+void LogManager::PrintAttackLog(const string& monsterName, int actualDamage, int currentHp, int damageType)
 {
-    int displayCurrentHp = (currentHp < 0) ? 0 : currentHp;
+    if (damageType == 1) {
+        cout << "\n[" << monsterName << "]에게 기본 공격을 가합니다!\n";
+    }
+    else if (damageType == 2) {
+        cout << "\n[" << monsterName << "]에게 스킬 공격을 가합니다!\n";
+    }
+    else if (damageType == 3) {
+        cout << "치명타!!!\n";
+        cout << "\n[" << monsterName << "]에게 치명적인 공격을 가합니다!\n";
+    }
+        
+    cout << monsterName << "이(가) " << actualDamage << "의 피해를 입었습니다! (남은 체력: " << currentHp << ")" << endl;
+}
 
-    cout << attackerName << "가 " << targetName << "을 공격합니다! "
-        << targetName << " 체력: " << displayCurrentHp << endl;
-
-    if (displayCurrentHp == 0)
-    {
-        cout << targetName << "가 사망했습니다. ";
-        if (targetName != "Goblin" && targetName != "Dragon") cout << "게임 오버!" << endl;
-        else cout << endl;
+// 3. 몬스터가 플레이어 공격
+// isCrit: false = 기본공격, true = 치명타
+void LogManager::PrintPlayerDamagedLog(const string& monsterName, int damage, int playerHealth, bool isCrit)
+{
+    if (!isCrit) {
+        cout << "\n[" << monsterName << "]에게 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
+        cout << "남은 체력 : " << playerHealth << "\n";
+    }
+    else {
+        cout << monsterName << "이 공격을 준비합니다 ...\n";
+        cout << "치명타!!!\n";
+        cout << "\n[" << monsterName << "]에게 치명적인 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
+        cout << "남은 체력 : " << playerHealth << "\n";
     }
 }
 
-//2. 체력 +50(포션) : 현재 체력을 50 회복 형태로 출력
-void LogManager::PrintPotionEffect(int healAmount)
+// 체력 포션 로그
+void LogManager::PrintPotionEffect(const std::string& potionName, int actualRestore)
 {
-    cout << "체력 +" << healAmount << "(포션) : 현재 체력을 " << healAmount << " 회복" << endl;
+    cout << potionName << "을 사용하여 체력을 " << actualRestore << " 회복했습니다!" << endl;
 }
 
-//3. 공격력 + 10: 해당 전투에만 효과 발휘 형태로 출력
-void LogManager::PrintBattleBuffEffect(int statAmount)
+// 공격력 포션 로그
+void LogManager::PrintBattleBuffEffect(const std::string& buffName, int increaseAmount, int currentAttack)
 {
-    cout << "공격력 + " << statAmount << " : 해당 전투에만 효과 발휘" << endl;
+    cout << buffName << "을 사용하여 공격력을 " << increaseAmount << " 증가시켰습니다!(이번 전투 동안만 유지됩니다)" << endl;
+    cout << "현재 공격력: " << currentAttack << endl;
+}
+
+// 경험치 획득 로그
+void LogManager::PrintExpReward(int amount, int currentExp, int maxExp)
+{
+    cout << "\n -> 경험치 +" << amount << " 획득! (현재 경험치: " << currentExp << "/" << maxExp << ")\n";
+}
+
+// 골드 획득 로그
+void LogManager::PrintGoldReward(int rewardGold, int currentGold)
+{
+    cout << " 골드 +" << rewardGold << " G 획득! (현재 골드: " << currentGold << "G)\n";
+}
+
+// 장비 아이템 사용 로그
+// 무기
+void LogManager::PrintWeaponEquip(const std::string& itemName, int damage)
+{
+    std::cout << itemName << "을(를) 장착하여 공격력이 " << damage << " 증가했습니다!" << std::endl;
+}
+
+// 방어구
+void LogManager::PrintArmorEquip(const std::string& itemName, int defense)
+{
+    std::cout << itemName << "을(를) 장착하여 방어력이 " << defense << " 증가했습니다!" << std::endl;
 }
 
 
-// 4. 경험치,골드 및 경험치 획득 로그 정의 
-void LogManager::PrintRewardLog(const string& playerName, int expAmount, int goldAmount, int currentExp, int maxExp, int currentGold)
-{
-    cout << playerName << "가 " << expAmount << " EXP와 " << goldAmount << " 골드를 획득했습니다. "
-        << "현재 EXP: " << currentExp << "/" << maxExp << ", 골드: " << currentGold << endl;
+// 레벨업 로그
+void LogManager::PrintLevelUp(int oldLevel, int newLevel, int hpDiff, int atkDiff, int beforeHP, int maxHP, int beforeAtk, int maxAtk) {
+    cout << "\n레벨업 조건 충족\n";
+    cout << "★☆★★☆★★☆★★☆★☆★★\n";
+    cout << "★☆★ LEVELUP ★☆★\n";
+    cout << "★☆★★☆★★☆★★☆★☆★★\n";
+    cout << " -> Lv." << oldLevel << " -> Lv." << newLevel << "\n";
+    cout << " -> HP +" << hpDiff << " 공격력 +" << atkDiff << " 증가!\n";
+    cout << "\n스탯이 상승했습니다!\n";
+    cout << "HP : " << beforeHP << " -> " << maxHP << "\n";
+    cout << "공격력 : " << beforeAtk << " -> " << maxAtk << "\n";
 }
 
-// 5. 몬스터 처치 기록 누적 함수 (예시: Hero가 Goblin을 공격합니다! Goblin 처치!)
+// 5. 몬스터 처치 기록 누적 함수
 void LogManager::RecordKill(const string& monsterName)
 {
 	// 맵에 처치 수 누적
 	killCounts[monsterName]++;
 
 	// "몬스터이름 처치!" 로 출력 
-	cout << monsterName << " 처치!" << endl;
+    std::cout << "\n 전투 승리! [" << monsterName << "]를 처치했습니다!\n";
+    std::cout << "=========================================\n";
+
 }
 
 // 6. 누적 처치 통계 출력 함수

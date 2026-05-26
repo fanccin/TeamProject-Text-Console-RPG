@@ -2,9 +2,10 @@
 
 #include <string>
 #include <map>
+#include "Character.h"
 
 
-
+class Character;
 class LogManager
 {
 private:
@@ -29,22 +30,37 @@ public:
     }
 
     // 0. 캐릭터 생성 및 정보 출력 로그 선언 (이름, 레벨, 체력, 공격력)
-    void PrintCharacterInfo(const std::string& playerName, int level, int hp, int attack);
+    void PrintCharacterInfo(Character* character);
 
     // 몬스터 등장
-    void PrintMonsterAppear(const std::string& monsterName, int monsterMaxHp, int monsterAtk);
+    void PrintMonsterAppear(const std::string& monsterName, int monsterMaxHp, int monsterAtk, int monsterDef);
     
-    //전투 중 공격/피해 로그
-    void PrintAttackLog(const std::string& attackerName, const std::string& targetName, int damage,  int currentHp);
+    //플레이어가 몬스터 공격/피해 로그
+    void PrintAttackLog(const std::string& monsterName, int actualDamage, int currentHp, int damageType);
 
-    //2. 체력 +50(포션) : 현재 체력을 50 회복 형태로 출력
-    void PrintPotionEffect(int healAmount);
+    //몬스터가 플레이어 공격/피해 로그
+    void PrintPlayerDamagedLog(const std::string& monsterName, int damage, int playerHealth, bool isCrit);
 
-    //3.공격력 + 10: 해당 전투에만 효과 발휘 형태로 출력
-    void PrintBattleBuffEffect(int statAmount);
+    //체력 포션 로그
+    void PrintPotionEffect(const std::string& potionName, int actualRestore);
 
-    // 4. 경험치,골드 획득 로그 선언
-    void PrintRewardLog(const std::string& playerName, int expAmount, int goldAmount, int currentExp, int maxExp, int currentGold);
+    //공격력 포션 로그
+    void PrintBattleBuffEffect(const std::string& buffName, int increaseAmount, int currentAttack);
+
+    //경험치 획득 로그
+    void PrintExpReward(int amount, int currentExp, int maxExp);
+
+    //골드 획득 로그
+    void PrintGoldReward(int rewardGold, int currentGold);
+
+    //무기 장착 로그
+    void PrintWeaponEquip(const std::string& itemName, int damage);
+
+    //방어구 장착 로그
+    void PrintArmorEquip(const std::string& itemName, int defense);
+
+    //레벨업 로그
+    void PrintLevelUp(int oldLevel, int newLevel, int hpDiff, int atkDiff, int beforeHP, int maxHP, int beforeAtk, int maxAtk);
 
     // 5. 몬스터 처치 기록 누적 선언
     void RecordKill(const std::string& monsterName);
