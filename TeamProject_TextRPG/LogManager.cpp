@@ -2,6 +2,9 @@
 #include "LogManager.h"
 #include "Character.h"
 
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 // 로그호출 : LogManager::GetInstance().함수명(...)
@@ -154,4 +157,51 @@ void LogManager::PrintKill() const
     }
 
     cout << "=========================================\n" << endl;
+}
+// 보스 출현 로그 출력 함수
+void LogManager::PrintBossAppear() const
+{
+    std::cout << "\n====================================\n";
+    std::cout << "!!! Boss출현 !!!\n";
+    std::cout << "드래곤이 나타났다...\n";
+    std::cout << "====================================\n";
+}
+// 클리어 로그 출력 함수
+void LogManager::PrintGameClear() const
+{
+    std::cout << "\n====================================\n";
+    std::cout << "드래곤이 쓰러졌다...\n";
+    std::cout << "세계에 평화가 찾아왔다.\n";
+    std::cout << "===== GAME CLEAR =====\n";
+    std::cout << "====================================\n";
+}
+// 크래딧 로그 출력 함수
+void LogManager::ShowCredits() const
+{
+    std::string credits[] = {
+            "\n\n\n\n\n\n\n\n\n\n\n\n",
+        "\n==============================",
+        "        GAME CLEAR           ",
+        "==============================",
+        "",
+        "Director : 노신성\n",
+        "Developer : 띵조\n",
+        "Character System : 김민석\n",
+        "Battle System : 노신성\n",
+        "Monster System : 연명흠\n",
+        "Item System : 김형준\n",
+        "Game Log System : 홍승표\n",
+        "Level up System : 이유록\n",
+        "Thanks for Playing!",
+        "==============================",
+        "\n\n\n\n\n\n\n\n\n\n\n\n",
+        "and you...",
+        "\n\n\n\n\n\n\n\n\n\n\n\n"
+    };
+
+    for (auto& line : credits)
+    {
+        std::cout << line << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
 }

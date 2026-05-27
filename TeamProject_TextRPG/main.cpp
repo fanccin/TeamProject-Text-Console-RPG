@@ -38,11 +38,14 @@ int main()
 			continue;
 		}
 
-		break; // 완벽하게 필터링된 이름(`name`)을 가지고 루프 탈출!
+		break;
 	}
 
 	// 전체 게임의 실행 여부를 제어하는 플래그
 	bool isGameRunning = true;
+
+	//보스 젠용 트리거
+	bool bossSpawned = false;
 
 	while (isGameRunning) {
 		// 처음 시작 or 패배 시 진입하는 전직 시스템
@@ -106,11 +109,32 @@ int main()
 		bool isCharacterAlive = true;
 
 		while (isCharacterAlive) {
+
+			//보스 등장조건 체크
+			if (!bossSpawned && character->getLevel() >= 10)
+			{
+				bossSpawned = true;
+			}
+
 			// 매 판 새로운 매니저를 생성하여 몬스터 리셋 후 전투 돌입
-			BattleManager* manager = new BattleManager(character);
+			BattleManager* manager = new BattleManager(character, bossSpawned);
 
 			std::cout << "!!!!!!!     WARNING     !!!!!!!\n";
 			manager->startBattle();
+
+			// 보스를 클리어했다면
+			if (manager->isBossBattle() && manager->isBossClearedResult())
+			{
+				LogManager::GetInstance().PrintGameClear();
+				LogManager::GetInstance().ShowCredits();
+
+				delete manager;
+				delete character;
+
+				isGameRunning = false;
+
+				break;
+			}
 
 			// 전투 종료 후 분기 처리
 			if (character->getHealth() <= 0) {
@@ -149,7 +173,7 @@ int main()
 				else {
 					std::cout << "게임을 종료합니다.\n";
 					isCharacterAlive = false;
-					isGameRunning = false;    // 전체 게임 종료
+					isGameRunning = false;   // 전체 게임 종료
 				}
 			}
 			else {
@@ -171,7 +195,7 @@ int main()
 						continue;
 					}
 					if (shopChoice == 0) {
-						character->displayStatus();
+						LogManager::GetInstance().PrintCharacterInfo(character);
 						continue;
 					}
 					if (shopChoice < 1 || shopChoice > 2) {
@@ -189,7 +213,6 @@ int main()
 						merchandise.enterShop(character);
 						std::cout << "\n\n당신은 상인을 뒤로하고 바로 다음 전장을 향합니다...\n\n";
 					}
-					
 				}
 				else {
 					std::cout << "당신은 상인을 뒤로하고 바로 다음 전장을 향합니다...\n\n";

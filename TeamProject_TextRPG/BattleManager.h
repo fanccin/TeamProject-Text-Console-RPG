@@ -10,11 +10,15 @@ class BattleManager {
 
 private :
 	Character* character;
+
+	bool isBoss; // 보스 출현 여부
+
+	bool isBossCleared = false; // 보스 클리어 체크
 	
 public :
 
-	BattleManager(Character* character)
-		: character(character){
+	BattleManager(Character* character, bool isBoss)
+		: character(character), isBoss(isBoss){
 		;
 	}
 
@@ -23,5 +27,8 @@ public :
 	Monster* generateMonster(int level);
 
 	void startBattle();
+
+	bool isBossBattle() const { return isBoss; } //보스 전투중인지 체크
+	bool isBossClearedResult() const { return isBossCleared; } //보스 클리어 여부
 
 };

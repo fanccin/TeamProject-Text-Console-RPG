@@ -17,8 +17,6 @@ std::string AttackBoost::getName() {
 void AttackBoost::use(Character* character) {
     if (character == nullptr) return;
 
-    int currentAttack = character->getAttack();
-    int actualAttack = currentAttack + attackIncrease;
-    character->setAttack(actualAttack);
+    character->addBuffAttack(attackIncrease);
     LogManager::GetInstance().PrintBattleBuffEffect(this->name, attackIncrease, character->getAttack());
 }

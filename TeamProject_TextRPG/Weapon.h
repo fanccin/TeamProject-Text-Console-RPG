@@ -8,6 +8,7 @@ class Weapon :
 {
 private:
     std::string name;
+    std::string type;
     int damage;
     int price;
 public:
@@ -16,4 +17,6 @@ public:
     std::string getName() override;
     void use(Character* character) override;
     int getPrice() override { return price; }
+    int getDamagaIncrease() { return damage; }
+    std::string getType() override { return type; }
 };

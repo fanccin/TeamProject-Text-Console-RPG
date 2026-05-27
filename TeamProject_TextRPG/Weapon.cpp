@@ -13,7 +13,6 @@ void Weapon::use(Character* character) {
     if (character == nullptr) return;
 
     int currentAttack = character->getAttack();
-    character->setAttack(currentAttack + damage);
-
+    character->setBaseAttack(currentAttack + damage);
     LogManager::GetInstance().PrintWeaponEquip(this->name, this->damage);
 }

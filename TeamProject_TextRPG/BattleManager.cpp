@@ -16,6 +16,13 @@
 
 Monster* BattleManager::generateMonster(int level) 
 {
+
+	if (isBoss) //보스생성
+	{
+		LogManager::GetInstance().PrintBossAppear();
+		return new BossMonster(level);
+	}
+
 	int monsterProbability = RandomMt19937<int>(0,99);
 
 	if (monsterProbability <= 40) return new Slime(level);
@@ -32,9 +39,6 @@ void BattleManager::startBattle()
 
 	//몬스터 정보 출력
 	LogManager::GetInstance().PrintMonsterAppear(monster->getName(), monster->getHealth(), monster->getAttack(), monster->getDefense());
-	
-	//노도핑 공격력 백업
-	int originalAttack = character->getAttack();
 
 	//전투 루프
 	while (character->getHealth() > 0 && monster->getHealth() > 0)
@@ -79,11 +83,12 @@ void BattleManager::startBattle()
 						std::cout << "잘못된 입력입니다. 다시 입력하세요.\n";
 						continue;
 					}
+					
 					character->getInventory()->UseItem(choice, character);
 					isItemUsed = true;
 
 					//아이템 사용 후
-					character->displayStatus();
+					LogManager::GetInstance().PrintCharacterInfo(character);
 				}
 			}
 		}
@@ -136,10 +141,10 @@ void BattleManager::startBattle()
 
 	//전투 결과 정산
 	//전투 종료 후 공격력 버프 꺼짐
-	character->setAttack(originalAttack);
+	character->clearBuff();
 
 	//승리 시
-	if (character->getHealth() >= 0) {
+	if (character->getHealth() > 0) {
 		{
 			//몬스터 처치 기록
 			LogManager::GetInstance().RecordKill(monster->getName());
@@ -158,6 +163,14 @@ void BattleManager::startBattle()
 
 			std::cout << "=========================================\n";
 			delete monster;
+
+			//보스 클리어 체크
+			if (isBoss)
+			{
+				isBossCleared = true;
+			}
+
+			return;
 		}
 	}
 

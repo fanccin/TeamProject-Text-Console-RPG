@@ -14,6 +14,7 @@ public:
     virtual void use(Character* character) = 0;            // 순수 가상 함수 (사용 기능 강제)
     virtual int getPrice() = 0;
     virtual bool isConsumable() { return false; }
+    virtual std::string getType() = 0;
 };
 
 std::vector<Item*> GetShopItemList();

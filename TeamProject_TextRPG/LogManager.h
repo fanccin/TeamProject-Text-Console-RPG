@@ -62,9 +62,18 @@ public:
     //레벨업 로그
     void PrintLevelUp(int oldLevel, int newLevel, int hpDiff, int atkDiff, int beforeHP, int maxHP, int beforeAtk, int maxAtk);
 
-    // 5. 몬스터 처치 기록 누적 선언
+    // 몬스터 처치 기록 누적 선언
     void RecordKill(const std::string& monsterName);
 
-    // 6. 누적 처치 출력 선언
+    // 누적 처치 출력 선언
     void PrintKill() const;
+
+    // 보스 출현 로그
+    void PrintBossAppear() const;
+
+    // 게임 클리어 로그
+    void PrintGameClear() const;
+
+    // 엔딩크레딧 로그
+    void ShowCredits() const;
 };

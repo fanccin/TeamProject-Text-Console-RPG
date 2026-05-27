@@ -7,6 +7,7 @@ private:
     std::string name;
     int healthRestore; // 회복량 수치
     int price;
+    std::string type;
 public:
     HealthPotion(std::string n, int restore, int p);
 
@@ -14,4 +15,5 @@ public:
     void use(Character* character) override;
     int getPrice() override { return price; }
     bool isConsumable() override { return true; }
+    std::string getType() override { return type; }
 };

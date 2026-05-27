@@ -31,3 +31,11 @@ Slime::Slime(int level) {
     attack = RandomMt19937<int>(level * 3, level * 6);
     defense = RandomMt19937<int>(level * 1, level * 3);
 }
+
+BossMonster::BossMonster(int level)
+{
+    name = "µå·¡°ï";
+    health = RandomMt19937<int>(level * 100, level * 150);
+    attack = RandomMt19937<int>(level * 25, level * 45);
+    defense = RandomMt19937<int>(level * 12, level * 25);
+}

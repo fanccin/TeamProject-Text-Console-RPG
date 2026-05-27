@@ -41,3 +41,7 @@ public: Troll(int level);
 class Slime : public Monster {
 public: Slime(int level);
 };
+
+class BossMonster : public Monster {
+public: BossMonster(int level);
+};

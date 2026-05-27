@@ -18,7 +18,7 @@ public:
     int getMaxHealth() const { return maxhealth; }
     int getMp() const { return mp; }
     int getMaxMp() const { return maxmp; }
-    int getAttack() const { return attack; }
+    int getAttack() const { return baseAttack + buffAttack; }
     int getDefense() const { return defense; }
     int getExp() const { return exp; }
     int getMaxExp() const { return maxexp; }
@@ -30,22 +30,24 @@ public:
     void setMaxHealth(int _maxhealth);
     void setMp(int _mp);
     void setMaxMp(int _maxmp);
-    void setAttack(int _attack);
+    void setBaseAttack(int amount) { baseAttack = amount; }
+    void addBuffAttack(int amount) { buffAttack += amount; }
     void setDefense(int _defense);
     void setExp(int _exp);
     void setMaxExp(int _maxExp);
     void setGold(int _Gold);
-
+    
     void GainExp(int amount);
 
     virtual ~Character() = default; //가상소멸자 - 전직 시 기본 
-
-    void displayStatus();
-
+    
     int takeDamage(int damage);
 
     // 순수 가상 함수
     virtual int skillAttack() = 0;
+
+    // 도핑 끄는 함수
+    void clearBuff() { buffAttack = 0; }
     
 
 protected: //직업 선택 시 변수 변경.
@@ -56,7 +58,8 @@ protected: //직업 선택 시 변수 변경.
     int maxhealth;
     int mp;
     int maxmp;
-    int attack;
+    int baseAttack; //기본 공격력 + 장비로 올라간 공격력
+    int buffAttack; //일시적인 버프 공격력
     int defense;
     int exp;
     int maxexp;
@@ -73,7 +76,7 @@ class Warrior : public Character
 public:
     Warrior(std::string name);
     int skillAttack() override {
-        int skillDamage = attack * 2;
+        int skillDamage = baseAttack * 2;
         return skillDamage;
     }
 };
@@ -84,7 +87,7 @@ class Magician : public Character
 public:
     Magician(std::string name);
     int skillAttack() override {
-        int skillDamage = attack * 2;
+        int skillDamage = baseAttack * 2;
         return skillDamage;
     }
 };
@@ -95,7 +98,7 @@ class Thief : public Character
 public:
     Thief(std::string name);
     int skillAttack() override {
-        int skillDamage = attack * 2;
+        int skillDamage = baseAttack * 2;
         return skillDamage;
     }
 };
@@ -106,7 +109,7 @@ class Archer : public Character
 public:
     Archer(std::string name);
     int skillAttack() override {
-        int skillDamage = attack * 2;
+        int skillDamage = baseAttack * 2;
         return skillDamage;
     }
 };
