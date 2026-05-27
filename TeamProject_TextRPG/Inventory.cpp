@@ -4,77 +4,69 @@
 #include "Weapon.h"
 #include "Armor.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 Inventory::~Inventory() {
-	for (Item* item : items_) {
-		delete item; 
-	}
-	items_.clear();
-}
-
-void Inventory::SortByPrice() {
-	std::sort(items_.begin(), items_.end(), compareByPrice);
+    for (Item* item : items_) {
+        delete item;
+    }
+    items_.clear();
 }
 
 void Inventory::AddItem(std::string itemType, std::string name, int value, int price) {
-	Item* CreatedItem = nullptr;
+    Item* CreatedItem = nullptr;
 
-	if (itemType == "Health") {
-		CreatedItem = new HealthPotion(name, value, price);
-	}
-	else if (itemType == "Attack") {
-		CreatedItem = new AttackBoost(name, value, price);
-	}
-	else if (itemType == "Weapon") {
-		CreatedItem = new Weapon(name, value, price);
-	}
-	else if (itemType == "Armor") {
-		CreatedItem = new Armor(name, value, price);
-	}
-	if (CreatedItem == nullptr) {
-		std::cout << "[ì—ëŸ¬] ì•Œ ìˆ˜ ì—†ëŠ” ì•„ì´í…œ íƒ€ìž…ìž…ë‹ˆë‹¤: " << itemType << std::endl;
-		return;
-	}
-	items_.push_back(CreatedItem);
+    if (itemType == "Health") {
+        CreatedItem = new HealthPotion(name, value, price);
+    }
+    else if (itemType == "Attack") {
+        CreatedItem = new AttackBoost(name, value, price);
+    }
+    else if (itemType == "Weapon") {
+        CreatedItem = new Weapon(name, value, price);
+    }
+    else if (itemType == "Armor") {
+        CreatedItem = new Armor(name, value, price);
+    }
+
+    if (CreatedItem == nullptr) {
+        std::cout << "[¿¡·¯] ¾Ë ¼ö ¾ø´Â ¾ÆÀÌÅÛ Å¸ÀÔÀÔ´Ï´Ù: " << itemType << std::endl;
+        return;
+    }
+    items_.push_back(CreatedItem);
 }
 
 void Inventory::RemoveItem(int index) {
-	if (index >= 0 && index < static_cast<int>(items_.size())) {
-		delete items_[index]; // ë©”ëª¨ë¦¬ í•´ì œ
-		items_.erase(items_.begin() + index); // ë°°ì—´ ì¹¸ ë‹¹ê¸°ê¸°
-	}
+    if (index >= 0 && index < static_cast<int>(items_.size())) {
+        delete items_[index];
+        items_.erase(items_.begin() + index);
+    }
 }
 
 void Inventory::UseItem(int index, Character* character) {
-	if (index >= 0 && index < static_cast<int>(items_.size())) {
-
-		items_[index]->use(character);
-
-		if (items_[index]->isConsumable()) {
-			delete items_[index];
-			items_.erase(items_.begin() + index);
-		}
-		else {
-			items_.erase(items_.begin() + index);
-		}
-	}
-	else {
-		std::cout << "ê°€ë°©ì— ì•„ì´í…œì´ ì—†ìŠµë‹ˆë‹¤." << std::endl;
-	}
+    if (index >= 1 && index <= static_cast<int>(items_.size())) {
+        int targetIndex = index - 1;
+        items_[targetIndex]->use(character);
+        delete items_[targetIndex];
+        items_.erase(items_.begin() + targetIndex);
+        std::cout << "¾ÆÀÌÅÛÀ» »ç¿ëÇÏ°í °¡¹æ¿¡¼­ Á¦°ÅÇß½À´Ï´Ù ..." << std::endl;
+    }
+    else {
+        std::cout << "¿Ã¹Ù¸£Áö ¾ÊÀº °¡¹æ ½½·ÔÀÌ°Å³ª ¾ÆÀÌÅÛÀÌ ¾ø½À´Ï´Ù ..." << std::endl;
+    }
 }
 
 void Inventory::ShowInventory() const {
-	cout << "\n========= [ì¸ë²¤í† ë¦¬] =========" << endl;
-	if(items_.empty()) {
-		cout << "ì¸ë²¤í† ë¦¬ê°€ ë¹„ì–´ ìžˆìŠµë‹ˆë‹¤." << endl;
-		cout << "==================================" << endl;
-		return;
-	}
-	for (size_t i = 0; i < items_.size(); ++i) {
-		std::cout << "[" << i+1 << "] " << items_[i]->getName() << "(G" << items_[i]->getPrice() << ")" << std::endl;
-	}
-	std::cout << "=============================" << std::endl;
+    cout << "\n========= [ÀÎº¥Åä¸®] =========" << endl;
+    if (items_.empty()) {
+        cout << "ÀÎº¥Åä¸®°¡ ºñ¾î ÀÖ½À´Ï´Ù." << endl;
+        cout << "==================================" << endl;
+        return;
+    }
+    for (size_t i = 0; i < items_.size(); ++i) {
+        std::cout << "[" << i + 1 << "] " << items_[i]->getName() << " (°¡°Ý: " << items_[i]->getPrice() << " G)" << std::endl;
+    }
+    std::cout << "=============================" << std::endl;
 }
-
