@@ -11,19 +11,18 @@ class Character //과제 내용에서 방어와 MP 추가됨.
 public:
     Character(std::string Name);
 
-    std::string getName() const { return name; }
-    std::string getJob() const { return job; }
-    int getLevel() const { return level; }
-    int getHealth() const { return health; }
-    int getMaxHealth() const { return maxhealth; }
-    int getMp() const { return mp; }
-    int getMaxMp() const { return maxmp; }
-    int getAttack() const { return attack; }
-    int getDefense() const { return defense; }
-    int getExp() const { return exp; }
-    int getMaxExp() const { return maxexp; }
-    int getGold() const { return gold; }
-    Inventory* getInventory() { return inventory; }
+    std::string getName();
+    std::string getJob();
+    int getLevel();
+    int getHealth();
+    int getMaxHealth();
+    int getMp();
+    int getMaxMp();
+    int getAttack();
+    int getDefense();
+    int getExp();
+    int getMaxExp();
+    int getGold();
 
     void setLevel(int _level);
     void setHealth(int _health);
@@ -42,11 +41,6 @@ public:
 
     void displayStatus();
 
-    int takeDamage(int damage);
-
-    // 순수 가상 함수
-    virtual int skillAttack() = 0;
-    
 
 protected: //직업 선택 시 변수 변경.
     std::string name;
@@ -62,7 +56,7 @@ protected: //직업 선택 시 변수 변경.
     int maxexp;
     int gold;
     Inventory* inventory;
- };
+};
 
 
 
@@ -72,10 +66,8 @@ class Warrior : public Character
 {
 public:
     Warrior(std::string name);
-    int skillAttack() override {
-        int skillDamage = attack * 2;
-        return skillDamage;
-    }
+
+    //    void attack(Monster* monster) override;
 };
 
 
@@ -83,10 +75,8 @@ class Magician : public Character
 {
 public:
     Magician(std::string name);
-    int skillAttack() override {
-        int skillDamage = attack * 2;
-        return skillDamage;
-    }
+
+    //    void attack(Monster* monster) override;
 };
 
 
@@ -94,10 +84,8 @@ class Thief : public Character
 {
 public:
     Thief(std::string name);
-    int skillAttack() override {
-        int skillDamage = attack * 2;
-        return skillDamage;
-    }
+
+    //    void attack(Monster* monster) override;
 };
 
 
@@ -105,10 +93,8 @@ class Archer : public Character
 {
 public:
     Archer(std::string name);
-    int skillAttack() override {
-        int skillDamage = attack * 2;
-        return skillDamage;
-    }
+
+    //    void attack(Monster* monster) override;
 };
 
 

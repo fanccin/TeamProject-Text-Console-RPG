@@ -5,7 +5,7 @@ class HealthPotion :
 {
 private:
     std::string name;
-    int healthRestore; // È¸º¹·® ¼öÄ¡
+    int healthRestore; // íšŒë³µëŸ‰ ìˆ˜ì¹˜
     int price;
 public:
     HealthPotion(std::string n, int restore, int p);

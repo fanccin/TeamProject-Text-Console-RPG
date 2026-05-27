@@ -1,7 +1,6 @@
 #include "AttackBoost.h"
 #include "Character.h"
 #include <iostream>
-#include "LogManager.h"
 class Character;
 
 using namespace std;
@@ -18,7 +17,7 @@ void AttackBoost::use(Character* character) {
     if (character == nullptr) return;
 
     int currentAttack = character->getAttack();
-    int actualAttack = currentAttack + attackIncrease;
-    character->setAttack(actualAttack);
-    LogManager::GetInstance().PrintBattleBuffEffect(this->name, attackIncrease, character->getAttack());
+    character->setAttack(currentAttack + attackIncrease);
+    cout << "" << name << "을 사용하여 공격력을 " << attackIncrease << " 증가시켰습니다!(이번 전투 동안만 유지됩니다)" << endl;
+    cout << "현재 공격력: " << character->getAttack() << endl;
 }

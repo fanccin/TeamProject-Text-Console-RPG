@@ -1,7 +1,6 @@
 #include "Weapon.h"
 #include "Character.h"
 #include <iostream>
-#include "LogManager.h"
 
 Weapon::Weapon(std::string n, int dmg, int p) : name(n), damage(dmg), price(p) {}
 
@@ -15,5 +14,5 @@ void Weapon::use(Character* character) {
     int currentAttack = character->getAttack();
     character->setAttack(currentAttack + damage);
 
-    LogManager::GetInstance().PrintWeaponEquip(this->name, this->damage);
+    std::cout << name << "을(를) 장착하여 공격력이 " << damage << " 증가했습니다!" << std::endl;
 }

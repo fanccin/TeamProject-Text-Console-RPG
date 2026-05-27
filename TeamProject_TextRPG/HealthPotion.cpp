@@ -2,7 +2,6 @@
 #include "Character.h"
 #include <iostream>
 #include <algorithm>
-#include "LogManager.h"
 
 using namespace std;
 
@@ -26,5 +25,5 @@ void HealthPotion::use(Character* character) {
 
     int actualRestore = nextHp - currentHp;
     character->setHealth(nextHp);
-    LogManager::GetInstance().PrintPotionEffect(this->name, actualRestore);
+    cout << "" << name << "을 사용하여 체력을 " << healthRestore << " 회복했습니다!" << endl;
 }

@@ -1,199 +1,65 @@
-﻿// TeamProject_TextRPG.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
-
 #include <iostream>
-#include <string>
-#include <vector>
-#include "Character.h"
-#include "Monster.h"
-#include "BattleManager.h"
-#include "LogManager.h"
+#include "Character.h" // 🚨 팀원분 파일명이 Characters.h 라면 스펠링 맞춰주세요!
+#include "Inventory.h"
 
-int main()
-{
-	std::cout << "===== 띵조 RPG =====\n";
-	std::cout << "플레이어의 이름을 알려주세요.\n";
-	std::cout << "이름 : ";
+using namespace std;
 
-	std::string rawInput;
-	std::string name;
+int main() {
+    // 1. 진짜 캐릭터 생성 (팀원분 클래스 활용)
+    cout << "=== [1단계] 플레이어 생성 ===" << endl;
+    Character* player = new Warrior("형준전사");
 
-	while (true) {
-		//한 줄 통째로 읽어옴
-		std::getline(std::cin, rawInput);
+    // 2. 가격 연동 버전 인벤토리 생성
+    Inventory* myBag = new Inventory();
 
-		//입력받은 문자열에서 공백(스페이스바, 탭 등) 제거
-		name = "";
-		for (char c : rawInput) {
-			if (!std::isspace(static_cast<unsigned char>(c))) {
-				name += c;
-			}
-		}
+    player->displayStatus();
 
-		//전부 공백일 경우 예외처리
-		if (name.empty()) {
-			std::cout << "이름은 최소 한 글자 이상 입력해야 합니다! 다시 입력해주세요.\n";
-			std::cout << "이름 : ";
-			continue;
-		}
+    cout << "\n=== [2단계] 생성자 가격 연동 AddItem 테스트 ===" << endl;
+    // 🌟 [아이템타입, 이름, 성능수치, 가격] 4개 인자 던지기!
+    myBag->AddItem("Health", "초급 빨간 포션", 50, 100);       // 100 골드
+    myBag->AddItem("Attack", "귀신 같은 비약", 15, 300);       // 300 골드
+    myBag->AddItem("Weapon", "태양의 검", 50, 5000);         // 5000 골드
+    myBag->AddItem("Armor", "기사의 갑옷", 30, 2500);         // 2500 골드
 
-		break; // 완벽하게 필터링된 이름(`name`)을 가지고 루프 탈출!
-	}
+    // 현재 가방 리스트 출력
+    myBag->ShowInventory();
 
-	// 전체 게임의 실행 여부를 제어하는 플래그
-	bool isGameRunning = true;
+    cout << "\n=== [3단계] 아이템 개별 가격 정상 연동 확인 ===" << endl;
+    // 가방 시스템이 잘 고쳐졌다면, 가격이 하드코딩(10, 100)이 아니라 
+    // 우리가 방금 AddItem할 때 넣은 금액이 다르게 찍혀야 합니다!
+    cout << "▶ 새로 장착한 시스템이 기억하는 아이템 가격들:" << endl;
 
-	while (isGameRunning) {
-		// 처음 시작 or 패배 시 진입하는 전직 시스템
-		std::cout << "\n\n============================================\n";
-		std::cout << "< 전직 시스템 >\n";
-		std::cout << name << "님, 직업을 선택해주세요!\n";
-		std::cout << "1. 전사   2. 마법사   3. 도적   4. 궁수\n";
-		std::cout << "============================================\n\n";
-				
-		Character* character = nullptr;
-		bool isJobSelected = false;
+    // 이 테스트를 위해 Inventory에 GetSize()를 만들어 뒀으니 활용해 봅시다.
+    // 임시로 가방 내부의 가격을 테스트하기 위해 작성된 코드입니다.
+    // (만약 에러가 난다면 이 3단계만 주석 처리하셔도 됩니다!)
+    /*
+    cout << " - 가방 1번 아이템 가격: 100골드 정답? -> " << myBag->GetPriceTest(0) << "골드" << endl;
+    */
 
-		while (!isJobSelected) {
-			int choice;
-			std::cout << "선택 : ";
-			std::cin >> choice;
+    cout << "\n=== [4단계] 장비 장착 및 스탯 변화 테스트 ===" << endl;
+    cout << "▶ 가방 [3]번방 (태양의 검) 장착! (5000골드 짜리)" << endl;
+    myBag->UseItem(2, player); // 무기니까 파괴 안 됨
 
-			if (std::cin.fail()) {
-				std::cin.clear();
-				std::cin.ignore(99999, '\n');
-				std::cout << "숫자만 입력해주세요!\n";
-				continue;
-			}
-			if (choice < 1 || choice > 4) {
-				std::cout << "존재하지 않는 직업입니다. 다시 선택해주세요.\n";
-				continue;
-			}
+    cout << "\n▶ 가방 [3]번방 (기사의 갑옷) 장착! (2500골드 짜리)" << endl;
+    myBag->UseItem(2, player); // 방어구니까 파괴 안 됨
 
-			switch (choice) {
-			case 1:
-				character = new Warrior(name);
-				std::cout << character->getJob() << "로 전직하였습니다.\n";
-				isJobSelected = true;
-				break;
-			case 2:
-				character = new Magician(name);
-				std::cout << character->getJob() << "로 전직하였습니다.\n";
-				isJobSelected = true;
-				break;
-			case 3:
-				character = new Thief(name);
-				std::cout << character->getJob() << "으로 전직하였습니다.\n";
-				isJobSelected = true;
-				break;
-			case 4:
-				character = new Archer(name);
-				std::cout << character->getJob() << "로 전직하였습니다.\n";
-				isJobSelected = true;
-				break;
-			default:
-				std::cout << "존재하지 않는 직업입니다. 다시 선택해주세요.\n";
-				continue;
-			}
-		}
+    cout << "\n=== [5단계] 최종 결과 스탯 및 남은 가방 확인 ===" << endl;
+    // 스탯이 정상 반영되었고, 가방에는 포션 2개만 남아야 성공!
+    player->displayStatus();
+    myBag->ShowInventory();
 
-		std::cout << "====================\n";
-		std::cout << "캐릭터가 생성되었습니다.\n\n\n";
-		LogManager::GetInstance().PrintCharacterInfo(character);
+    cout << "\n=== [6단계] 소모품 사용 및 메모리 정리 ===" << endl;
+    cout << "▶ 가방 [1]번방 (초급 빨간 포션) 마시기!" << endl;
+    myBag->UseItem(0, player);
 
-		// 캐릭터 생존 상태에서 무한 전투 루프
-		bool isCharacterAlive = true;
+    cout << "\n=== [7단계] 최종 가방 상태 (비약 1개만 남아야 함) ===" << endl;
+    myBag->ShowInventory();
 
-		while (isCharacterAlive) {
-			// 매 판 새로운 매니저를 생성하여 몬스터 리셋 후 전투 돌입
-			BattleManager* manager = new BattleManager(character);
+    // 메모리 누수 방지 (소멸자 자동 실행 구역)
+    cout << "\n=== [8단계] 동적 할당 메모리 해제 ===" << endl;
+    delete player;
+    delete myBag; // 🌟 가방이 터지면서 남은 '비약'도 가상 소멸자로 깔끔히 청소됩니다!
 
-			std::cout << "!!!!!!!     WARNING     !!!!!!!\n";
-			manager->startBattle();
-
-			// 전투 종료 후 분기 처리
-			if (character->getHealth() <= 0) {
-				// 패배 분기
-				int gameOverChoice;
-				while (true) {
-					std::cout << "\n============================================\n";
-					std::cout << "... You Died ...\n";
-					std::cout << "1. 처음부터 재도전하기...\n";
-					std::cout << "2. 게임 완전히 종료하기...\n";
-					std::cout << "============================================\n";
-					std::cout << "선택 : ";
-					std::cin >> gameOverChoice;
-
-					if (std::cin.fail()) {
-						std::cin.clear();
-						std::cin.ignore(99999, '\n');
-						std::cout << "숫자만 입력해주세요.\n";
-						continue;
-					}
-					if (gameOverChoice < 1 || gameOverChoice > 2) {
-						std::cout << "없는 메뉴입니다. 다시 골라주세요.\n";
-						continue;
-					}
-					break;
-				}
-
-				// character와 manager 둘다 파괴
-				delete manager;
-				delete character;
-
-				if (gameOverChoice == 1) {
-					std::cout << "처음으로 돌아가 직업을 다시 선택합니다...\n";
-					isCharacterAlive = false; // 전투 루프를 탈출하여 상위 전직 루프로 이동
-				}
-				else {
-					std::cout << "게임을 종료합니다.\n";
-					isCharacterAlive = false;
-					isGameRunning = false;    // 전체 게임 종료
-				}
-			}
-			else {
-				// [승리 분기]
-				int shopChoice;
-				while (true) {
-					std::cout << "\n============================================\n";
-					std::cout << "수상한 상인이 다가옵니다. 대화를 하시겠습니까?\n";
-					std::cout << "1. 비밀스러운 거래   2. 다음 전투 속행\n";
-					std::cout << "0. 캐릭터 상태 확인\n";
-					std::cout << "============================================\n";
-					std::cout << "선택 : ";
-					std::cin >> shopChoice;
-
-					if (std::cin.fail()) {
-						std::cin.clear();
-						std::cin.ignore(99999, '\n');
-						std::cout << "숫자만 입력해주세요.\n";
-						continue;
-					}
-					if (shopChoice == 0) {
-						character->displayStatus();
-						continue;
-					}
-					if (shopChoice < 1 || shopChoice > 2) {
-						std::cout << "없는 메뉴입니다. 다시 골라주세요.\n";
-						continue;
-					}
-					break;
-				}
-
-				if (shopChoice == 1) {
-					std::cout << "상인이 소름끼치게 웃으며 물건을 보여줍니다...\n";
-					// TODO: 상점 기능 함수 호출 영역
-				}
-				else {
-					std::cout << "당신은 상인을 무시하고 바로 다음 전장을 향합니다...\n\n";
-				}
-
-				// battleManager 파괴
-				// character 객체는 유지
-				delete manager;
-			}
-		}
-	} //  isGameRunning 루프 
-
-	return 0;
+    cout << "모든 테스트가 에러 없이 성공적으로 종료되었습니다!" << endl;
+    return 0;
 }

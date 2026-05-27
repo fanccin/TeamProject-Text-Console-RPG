@@ -1,27 +1,42 @@
-#include <iostream>
-#include <string>
+//Characters.cpp
+
+#include<iostream>
+#include<string>
 #include "Character.h"
-#include "Inventory.h"
-#include "LogManager.h"
 
 using namespace std;
 
+//ìƒì„±ìž
 Character::Character(std::string name)
 {
+    //ì´ˆê¸° ëŠ¥ë ¥ì¹˜ ë ˆë²¨ 1, ì´ˆê¸° ì²´ë ¥ 200, ê³µê²©ë ¥ 30, ê²½í—˜ì¹˜ 0ìœ¼ë¡œ ì‹œìž‘.
     this->name = name;
-    job = "¹«Á÷";
-    level = 1;
-    health = 200;
-    maxhealth = 200;
-    mp = 50;
-    maxmp = 50;
-    attack = 50;
-    defense = 50;
-    gold = 0;
-    exp = 0;
-    maxexp = 100;
-    inventory = new Inventory();
+    this->level = 1;
+    this->health = 200; //í˜„ìž¬ì²´ë ¥
+    this->maxhealth = 200; //ìµœëŒ€ì²´ë ¥
+    this->mp = 50;
+    this->maxmp = 50;
+    this->attack = 30;
+    this->defense = 30;
+    this->gold = 0;
+    this->exp = 0; //ì´ˆê¸° ê²½í—˜ì¹˜ 0
+    this->maxexp = 100;
+    //    void ê²½í—˜ì¹˜(int ê²½í—˜ì¹˜)
+    this->inventory = new Inventory();// new : ì‹¤ì²´ë¥¼ ë©”ëª¨ë¦¬ íƒ€ìž…ìœ¼ë¡œ ë§Œë“œëŠ” ê²ƒ.
 }
+
+std::string Character::getName() { return name; }
+std::string Character::getJob() { return job; }
+int Character::getLevel() { return level; }
+int Character::getHealth() { return health; }
+int Character::getMaxHealth() { return maxhealth; }
+int Character::getMp() { return mp; }
+int Character::getMaxMp() { return maxmp; }
+int Character::getAttack() { return attack; }
+int Character::getDefense() { return defense; }
+int Character::getExp() { return exp; }
+int Character::getMaxExp() { return maxexp; }
+int Character::getGold() { return gold; }
 
 void Character::setLevel(int _level) { level = _level; }
 void Character::setHealth(int _health) { health = _health; }
@@ -34,105 +49,119 @@ void Character::setExp(int _exp) { exp = _exp; }
 void Character::setMaxExp(int _maxExp) { maxexp = _maxExp; }
 void Character::setGold(int _Gold) { gold = _Gold; }
 
+
+//ìŠ¤íƒ¯ ì¶œë ¥
 void Character::displayStatus()
 {
-    cout << "\n========= [¼Ó¼º »ó¼¼Á¤º¸] =========" << endl;
-    cout << " ÀÌ¸§     : " << name << endl;
-    cout << " Á÷¾÷     : " << job << endl;
-    cout << " ·¹º§     : " << level << " / 10" << endl;
-    cout << " HP       : " << health << " / " << maxhealth << endl;
-    cout << " MP       : " << mp << " / " << maxmp << endl;
-    cout << " °æÇèÄ¡   : " << exp << " / " << maxexp << endl;
-    cout << " °ø°Ý·Â   : " << attack << endl;
-    cout << " ¹æ¾î·Â   : " << defense << endl;
-    cout << " º¸À¯°ñµå : " << gold << " G" << endl;
-    cout << "===================================\n" << endl;
+    cout << "ì†ì„± ìƒì„¸ì •ë³´\n";
+    cout << " " << name << "\n";
+    cout << " " << level << " /10\n";
+    cout << "S2 HP       " << health << "\n";
+    cout << "MP        " << mp << "\n";
+    cout << "X  ê³µê²©ë ¥    " << attack << "\n";
+    cout << "[] ë°©ì–´ë ¥    " << defense << "\n";
+    cout << "$  ë³´ìœ ê³¨ë“œ  " << gold << "\n";
 }
 
-int Character::takeDamage(int damage)
-{
-    int actualDamage = damage - defense;
-    if (actualDamage <= 0) actualDamage = 1;
-
-    health -= actualDamage;
-    if (health < 0) health = 0;
-
-    return actualDamage;
-}
-
-void Character::GainExp(int amount)
+//ë ˆë²¨ ì—…
+void Character::GainExp(int amount)//ê²½í—˜ì¹˜ë¥¼ ì™¸ë¶€ì—ì„œ ë°›ëŠ”ë‹¤.
 {
     exp += amount;
-    int oldlevel = level;
-    int beforeHP = maxhealth;
-    int beforeattack = attack;
+    int oldlevel = level;//í˜„ìž¬ ë ˆë²¨ ë³µì œ
+    int beforeHP = maxhealth;//í˜„ìž¬ hp ë³µì œ
 
-    LogManager::GetInstance().PrintExpReward(amount, exp, maxexp);
+    int beforeattack = attack;//í˜„ìž¬ ê³µê²©ë ¥ ë³µì œ
 
-    while (exp >= maxexp && level < 10)
+
+    std::cout << "\n -> ê²½í—˜ì¹˜ +" << amount << " íšë“! " << "(í˜„ìž¬ ê²½í—˜ì¹˜: " << exp << "/" << maxexp << ")\n";
+
+
+    while (exp >= maxexp && level < 10)//uiì™€ ì²˜ë¦¬ ë¶„ë¦¬
     {
         exp -= maxexp;
         level++;
+
+        // ì„±ìž¥ê°’ 
         maxhealth += level * 20;
         attack += level * 5;
+
+        // ë ˆë²¨ì—…í•˜ë©´ ì²´ë ¥ íšŒë³µ
         health = maxhealth;
+
+        // ë‹¤ìŒ ë ˆë²¨ ìš”êµ¬ ê²½í—˜ì¹˜ ì¦ê°€
         maxexp += 10;
     }
 
-    if (level >= 10)
+    if (level >= 10)//ìµœëŒ€ë ˆë²¨ ì œí•œ ë²„ê·¸ ë°©ì§€
     {
         level = 10;
     }
 
-    if (level > oldlevel)
+
+    if (level > oldlevel) //UIì¶œí˜„ì¡°ê±´
     {
-        LogManager::GetInstance().PrintLevelUp(
-            oldlevel, level,
-            (maxhealth - beforeHP), (attack - beforeattack),
-            beforeHP, maxhealth,
-            beforeattack, attack
-        );
+        std::cout << "\në ˆë²¨ì—… ì¡°ê±´ ì¶©ì¡±\n";
+        std::cout << "â˜…â˜†â˜…â˜…â˜†â˜…â˜…â˜†â˜…â˜…â˜†â˜…â˜†â˜…â˜…\n";
+        std::cout << "â˜…â˜†â˜… LEVEL UPâ˜…â˜†â˜…\n";
+        std::cout << "â˜…â˜†â˜…â˜…â˜†â˜…â˜…â˜†â˜…â˜…â˜†â˜…â˜†â˜…â˜…\n";
+        std::cout << " -> Lv." << oldlevel << " -> Lv." << level << "\n";
+        std::cout << " -> HP +" << (maxhealth - beforeHP) << " ê³µê²©ë ¥ +" << (attack - beforeattack) << " ì¦ê°€!\n";
+        std::cout << "\nìŠ¤íƒ¯ì´ ìƒìŠ¹í–ˆìŠµë‹ˆë‹¤!\n";
+        std::cout << "HP : " << beforeHP << " -> " << maxhealth << "\n";
+        std::cout << "ê³µê²©ë ¥ : " << beforeattack << " -> " << attack << "\n";
+
     }
 }
 
-Warrior::Warrior(std::string name) : Character(name)
+
+//Character::~Character(){} // ì†Œë©¸ìž
+
+
+//ì§ì—…ì„ íƒ
+Warrior::Warrior(std::string name)
+    :Character(name)
 {
-    this->job = "Àü»ç";
+    this->job = "ì „ì‚¬";
     this->health += 50;
     this->maxhealth += 50;
     this->defense += 50;
-    cout << "ÃÊº¸ Å»¶ô Àü»ç ÇÕ°Ý. (HP +50. ¹æ¾î·Â +50.)\n";
-    cout << "°ø°Ý ½Àµæ!\n";
-    cout << "½ºÅ³ ½Àµæ!\n";
+    cout << "ì´ˆë³´ íƒˆë½ ì „ì‚¬ í•©ê²©. (HP +50. ë°©ì–´ë ¥ +50.)\n";
+    cout << "ê³µê²© ìŠµë“!\n";
+    cout << "ìŠ¤í‚¬ ìŠµë“!\n";
 }
 
-Magician::Magician(std::string name) : Character(name)
+
+Magician::Magician(std::string name)
+    :Character(name)
 {
-    this->job = "¸¶¹ý»ç";
-    this->mp += 50;
-    this->maxmp += 50;
+    this->job = "ë§ˆë²•ì‚¬";
+    this->mp *= 2;
+    this->maxmp *= 2;
     this->attack += 50;
-    cout << "ÃÊº¸ Å»¶ô ¹ý»ç ÇÕ°Ý. (MP +50. °ø°Ý·Â +50.)\n";
-    cout << "°ø°Ý ½Àµæ!\n";
-    cout << "½ºÅ³ ½Àµæ!\n";
+    cout << "ì´ˆë³´ íƒˆë½ ë²•ì‚¬ í•©ê²©. (MP 2ë°°. ê³µê²© +50.)\n";
+    cout << "ê³µê²© ìŠµë“!\n";
+    cout << "ìŠ¤í‚¬ ìŠµë“!\n";
 }
 
-Thief::Thief(std::string name) : Character(name)
+Thief::Thief(std::string name)
+    :Character(name)
 {
-    this->job = "µµÀû";
+    this->job = "Thief";
     this->health += 20;
     this->maxhealth += 20;
     this->attack += 20;
-    cout << "ÃÊº¸ Å»¶ô µµÀû ÇÕ°Ý. (HP +20. °ø°Ý·Â +20.)\n";
-    cout << "°ø°Ý ½Àµæ!\n";
-    cout << "½ºÅ³ ½Àµæ!\n";
+    cout << "ì´ˆë³´ íƒˆë½ ì „ì‚¬ í•©ê²©. (HP +20. ê³µê²© +20.)\n";
+    cout << "ê³µê²© ìŠµë“!\n";
+    cout << "ìŠ¤í‚¬ ìŠµë“!\n";
 }
 
-Archer::Archer(std::string name) : Character(name)
+
+Archer::Archer(std::string name)
+    :Character(name)
 {
-    this->job = "±Ã¼ö";
+    this->job = "Archer";
     this->attack *= 2;
-    cout << "ÃÊº¸ Å»¶ô ±Ã¼ö ÇÕ°Ý. (°ø°Ý·Â 2¹è.)\n";
-    cout << "°ø°Ý ½Àµæ!\n";
-    cout << "½ºÅ³ ½Àµæ!\n";
+    cout << "ì´ˆë³´ íƒˆë½ ì „ì‚¬ ê¶ìˆ˜. (ê³µê²© 2ë°°.)\n";
+    cout << "ê³µê²© ìŠµë“!\n";
+    cout << "ìŠ¤í‚¬ ìŠµë“!\n";
 }

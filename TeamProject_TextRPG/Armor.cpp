@@ -1,7 +1,6 @@
 #include "Armor.h"
 #include "Character.h"
 #include <iostream>
-#include "LogManager.h"
 
 Armor::Armor(std::string n, int def, int p)
     : name(n), defense(def), price(p) {
@@ -17,5 +16,5 @@ void Armor::use(Character* character) {
     int currentDefense = character->getDefense();
     character->setDefense(currentDefense + defense);
 
-    LogManager::GetInstance().PrintArmorEquip(this->name, this->defense);
+    std::cout << name << "을(를) 장착하여 방어력이 " << defense << " 증가했습니다!" << std::endl;
 }
