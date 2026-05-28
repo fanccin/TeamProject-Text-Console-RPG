@@ -14,7 +14,7 @@ void LogManager::PrintCharacterInfo(Character* character)
 {
     if (character == nullptr) return;
 
-    cout << "\n========= [ 캐릭터 정보 ] =========" << endl;
+    cout << "\n$S$========= [ 캐릭터 정보 ] =========" << endl;
     cout << " 이름     : " << character->getName() << endl;
     cout << " 직업     : " << character->getJob() << endl;
     cout << " 레벨     : " << character->getLevel() << " / 10" << endl;
@@ -24,7 +24,7 @@ void LogManager::PrintCharacterInfo(Character* character)
     cout << " 공격력   : " << character->getAttack() << endl;
     cout << " 방어력   : " << character->getDefense() << endl;
     cout << " 보유골드 : " << character->getGold() << " G" << endl;
-    cout << "===================================\n" << endl;
+    cout << "===================================$/S$\n" << endl;
 }
 
 // 1.몬스터 등장
@@ -44,14 +44,15 @@ void LogManager::PrintMonsterAppear(const string& monsterName, int monsterMaxHp,
 void LogManager::PrintAttackLog(const string& monsterName, int actualDamage, int currentHp, int damageType)
 {
     if (damageType == 1) {
-        cout << "\n[" << monsterName << "]에게 기본 공격을 가합니다!\n";
+        cout << "\n" << monsterName << "에게 기본 공격을 가합니다!\n";
     }
     else if (damageType == 2) {
-        cout << "\n[" << monsterName << "]에게 스킬 공격을 가합니다!\n";
+        cout << "\n" << monsterName << "에게 스킬 공격을 가합니다!\n";
     }
     else if (damageType == 3) {
-        cout << "치명타!!!\n";
-        cout << "\n[" << monsterName << "]에게 치명적인 공격을 가합니다!\n";
+        cout << "공격을 준비합니다 ...\n\n$D$";
+        cout << "$T$치명타!!!$/T$\n";
+        cout << "\n" << monsterName << "에게 치명적인 공격을 가합니다!\n";
     }
         
     cout << monsterName << "이(가) " << actualDamage << "의 피해를 입었습니다! (남은 체력: " << currentHp << ")" << endl;
@@ -62,13 +63,13 @@ void LogManager::PrintAttackLog(const string& monsterName, int actualDamage, int
 void LogManager::PrintPlayerDamagedLog(const string& monsterName, int damage, int playerHealth, bool isCrit)
 {
     if (!isCrit) {
-        cout << "\n[" << monsterName << "]에게 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
+        cout << "\n" << monsterName << "에게 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
         cout << "남은 체력 : " << playerHealth << "\n";
     }
     else {
-        cout << monsterName << "이 공격을 준비합니다 ...\n";
-        cout << "치명타!!!\n";
-        cout << "\n[" << monsterName << "]에게 치명적인 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
+        cout << monsterName << "이 공격을 준비합니다 ...\n\n$D$";
+        cout << "$T$치명타!!!$/T$\n";
+        cout << "\n" << monsterName << "에게 치명적인 공격을 받았습니다 ...(데미지 : " << damage << ")\n";
         cout << "남은 체력 : " << playerHealth << "\n";
     }
 }
@@ -132,7 +133,7 @@ void LogManager::RecordKill(const string& monsterName)
 	killCounts[monsterName]++;
 
 	// "몬스터이름 처치!" 로 출력 
-    std::cout << "\n 전투 승리! [" << monsterName << "]를 처치했습니다!\n";
+    std::cout << "\n전투 승리! " << monsterName << "을(를) 처치했습니다!\n";
     std::cout << "=========================================\n";
 
 }
@@ -162,8 +163,8 @@ void LogManager::PrintKill() const
 void LogManager::PrintBossAppear() const
 {
     std::cout << "\n====================================\n";
-    std::cout << "!!! Boss출현 !!!\n";
-    std::cout << "드래곤이 나타났다...\n";
+    std::cout << "!!!   Boss 출현   !!!\n";
+    std::cout << "$T$드래곤이 나타났다 ...!$/T$\n";
     std::cout << "====================================\n";
 }
 // 클리어 로그 출력 함수
@@ -172,7 +173,7 @@ void LogManager::PrintGameClear() const
     std::cout << "\n====================================\n";
     std::cout << "드래곤이 쓰러졌다...\n";
     std::cout << "세계에 평화가 찾아왔다.\n";
-    std::cout << "===== GAME CLEAR =====\n";
+    std::cout << "=====$T$ GAME CLEAR $/T$=====\n";
     std::cout << "====================================\n";
 }
 // 크래딧 로그 출력 함수

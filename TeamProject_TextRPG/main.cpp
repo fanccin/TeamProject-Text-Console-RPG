@@ -10,8 +10,97 @@
 #include "LogManager.h"
 #include "Shop.h"
 
+#include <chrono>
+#include <thread>
+
+
+
+class DelayStreamBuf : public std::streambuf {
+private:
+	std::streambuf* sbuf;
+	bool typingMode = false; //한글자씩 타이핑
+	bool skipMode = false;
+	std::string tagBuffer = ""; //특수 명령어 태그 감지
+public:
+	DelayStreamBuf(std::streambuf* originalBuf) : sbuf(originalBuf) {}
+protected:
+	// 콘솔에 문자가 출력될 때 실행하는 함수
+	int overflow(int c) override {
+		if (c == EOF) return EOF;
+
+		// 태그 입력받기
+		if (c == '$' && tagBuffer.empty()) {
+			tagBuffer = "$";
+			return c;
+		}
+		if (!tagBuffer.empty()) {
+			tagBuffer += static_cast<char>(c);
+
+			// 태그 닫을때 해석
+			if (c == '$') {
+				if (tagBuffer == "$D$") { // D : 1초 딜레이
+					sbuf->pubsync();
+					std::this_thread::sleep_for(std::chrono::milliseconds(750));
+				}
+				else if (tagBuffer == "$T$") { // T : 글자단위 출력모드 on
+					typingMode = true;
+				}
+				else if (tagBuffer == "$/T$") { // /T : 글자단위 출력모드 off
+					typingMode = false;
+				}
+				else if (tagBuffer == "$S$") {
+					skipMode = true;
+				}
+				else if (tagBuffer == "$/S$") {
+					skipMode = false;
+				}
+				tagBuffer = "";
+				return c;
+			}
+
+			// 예외처리
+			if (tagBuffer.length() > 5) {
+				for (char ch : tagBuffer) sbuf->sputc(ch);
+				tagBuffer = "";
+			}
+			return c;
+		}
+		// 화면에 문자 출력
+		int result = sbuf->sputc(c);
+
+		if (skipMode) {
+			return result;
+		}
+
+		// 출력 연출 분기
+		if (typingMode) {
+			// 글자단위 모드 : 한 글자 나올 때마다 미세하게 정지
+			// 한글 깨짐 방지->멀티바이트(음수) 체크 후 정지
+			if (c > 0 || (c < 0 && tagBuffer.empty())) {
+				sbuf->pubsync();
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+		}
+		
+		// 출력한 문자가 줄바꿈(\n)이면 0.2초 정지 및 화면 갱신
+		if (c == '\n') {
+			sbuf->pubsync(); // 즉시 화면에 밀어냄(flush)
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
+		return result;
+	}
+};
+
+
+
+
 int main()
 {
+
+	// cout 리모컨 교체
+	DelayStreamBuf delayBuf(std::cout.rdbuf());
+	std::cout.rdbuf(&delayBuf);
+
 	std::cout << "===== 띵조 RPG =====\n";
 	std::cout << "플레이어의 이름을 알려주세요.\n";
 	std::cout << "이름 : ";
@@ -101,8 +190,8 @@ int main()
 			}
 		}
 
-		std::cout << "====================\n";
-		std::cout << "캐릭터가 생성되었습니다.\n\n\n";
+		std::cout << "===================================$D$\n\n";
+		std::cout << "캐릭터가 생성되었습니다.\n";
 		LogManager::GetInstance().PrintCharacterInfo(character);
 
 		// 캐릭터 생존 상태에서 무한 전투 루프
@@ -119,14 +208,15 @@ int main()
 			// 매 판 새로운 매니저를 생성하여 몬스터 리셋 후 전투 돌입
 			BattleManager* manager = new BattleManager(character, bossSpawned);
 
-			std::cout << "!!!!!!!     WARNING     !!!!!!!\n";
 			manager->startBattle();
 
 			// 보스를 클리어했다면
 			if (manager->isBossBattle() && manager->isBossClearedResult())
 			{
 				LogManager::GetInstance().PrintGameClear();
+				LogManager::GetInstance().PrintKill();
 				LogManager::GetInstance().ShowCredits();
+												
 
 				delete manager;
 				delete character;
@@ -142,7 +232,7 @@ int main()
 				int gameOverChoice;
 				while (true) {
 					std::cout << "\n============================================\n";
-					std::cout << "... You Died ...\n";
+					std::cout << "$T$... You Died ...$/T$\n";
 					std::cout << "1. 처음부터 재도전하기...\n";
 					std::cout << "2. 게임 완전히 종료하기...\n";
 					std::cout << "============================================\n";
@@ -180,7 +270,7 @@ int main()
 				// [승리 분기]
 				int shopChoice;
 				while (true) {
-					std::cout << "\n============================================\n";
+					std::cout << "\n$D$============================================\n";
 					std::cout << "수상한 상인이 다가옵니다. 대화를 하시겠습니까?\n";
 					std::cout << "1. 비밀스러운 거래   2. 다음 전투 속행\n";
 					std::cout << "0. 캐릭터 상태 확인\n";
@@ -206,12 +296,12 @@ int main()
 				}
 
 				if (shopChoice == 1) {
-					std::cout << "상인이 소름끼치게 웃으며 물건을 보여줍니다...\n";
+					std::cout << "상인이 음흉하게 웃으며 물건을 보여줍니다...$D$\n";
 					{
 						// 일반 지역변수로 사용
 						Shop merchandise;
 						merchandise.enterShop(character);
-						std::cout << "\n\n당신은 상인을 뒤로하고 바로 다음 전장을 향합니다...\n\n";
+						std::cout << "\n\n당신은 상인을 뒤로하고 바로 다음 전장을 향합니다...$D$\n\n";
 					}
 				}
 				else {

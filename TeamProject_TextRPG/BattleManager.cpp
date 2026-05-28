@@ -33,6 +33,7 @@ Monster* BattleManager::generateMonster(int level)
 }
 void BattleManager::startBattle()
 {
+	std::cout << "!!!!!   $T$  WARNING$/T$     !!!!!\n\n";
 	//몬스터 생성
 	//캐릭터 레벨에 따른 몬스터 레벨 스케일링
 	Monster* monster = generateMonster(character->getLevel());
@@ -45,7 +46,7 @@ void BattleManager::startBattle()
 	{
 		//===============플레이어 턴====================
 		std::cout << "\n[" << character->getName() << "의 턴]\n";
-		std::cout << "\n 주사위를 굴렸습니다 ...\n";
+		std::cout << "\n주사위를 굴렸습니다 ...\n";
 		int playerRoll = RandomMt19937<int>(1, 100);
 
 		//아이템 사용 선택지
@@ -54,16 +55,16 @@ void BattleManager::startBattle()
 				bool isItemUsed = false;
 				while (!isItemUsed) {
 					int choice;
-					std::cout << "\n 아이템을 사용합니다 ...\n";
+					std::cout << "\n아이템을 사용합니다 ...\n";
 
 					if (character->getInventory()->GetSize() == 0) {
-						std::cout << "가방을 뒤졌으나 아무것도 없었습니다 ...\n";
+						std::cout << "가방을 뒤졌으나 아무것도 없었습니다 ...\n\n";
 						break;
 					}
 
 					//인벤토리 보여주기
 					character->getInventory()->ShowInventory();
-					std::cout << "\n 사용할 아이템 : \n";
+					std::cout << "\n사용할 아이템 : \n";
 					std::cout << "( 0. 캐릭터 상태 확인 )\n";
 					
 					//예외처리
@@ -161,7 +162,7 @@ void BattleManager::startBattle()
 			ItemDrop item;
 			item.itemDrop(character);
 
-			std::cout << "=========================================\n";
+			std::cout << "\n";
 			delete monster;
 
 			//보스 클리어 체크
@@ -173,5 +174,4 @@ void BattleManager::startBattle()
 			return;
 		}
 	}
-
 }

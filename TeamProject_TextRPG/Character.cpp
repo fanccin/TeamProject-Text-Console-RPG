@@ -85,9 +85,9 @@ Warrior::Warrior(std::string name) : Character(name)
     this->job = "전사";
     this->health += 50;
     this->maxhealth += 50;
-    this->defense += 50;
-    cout << "초보 탈락 전사 합격. (HP +50. 방어력 +50.)\n";
-    cout << "공격 습득!\n";
+    this->defense += 10;
+    cout << "강인한 전사는 체력과 방어력이 증가합니다. (HP +50, 방어력 +10)\n";
+    cout << "기본 공격 습득!\n";
     cout << "스킬 습득!\n";
 }
 
@@ -96,8 +96,8 @@ Magician::Magician(std::string name) : Character(name)
     this->job = "마법사";
     this->mp += 50;
     this->maxmp += 50;
-    this->baseAttack += 50;
-    cout << "초보 탈락 법사 합격. (MP +50. 공격력 +50.)\n";
+    this->baseAttack += 10;
+    cout << "신비로운 마법사는 마력과 공격력이 증가합니다. (MP +50, 공격력 +10)\n";
     cout << "공격 습득!\n";
     cout << "스킬 습득!\n";
 }
@@ -105,19 +105,21 @@ Magician::Magician(std::string name) : Character(name)
 Thief::Thief(std::string name) : Character(name)
 {
     this->job = "도적";
-    this->health += 20;
-    this->maxhealth += 20;
-    this->baseAttack += 20;
-    cout << "초보 탈락 도적 합격. (HP +20. 공격력 +20.)\n";
-    cout << "공격 습득!\n";
+    this->health -= 50;
+    this->maxhealth -= 50;
+    this->baseAttack += 30;
+    cout << "재빠른 도적은 체력이 낮지만 공격력이 높습니다. (HP -50, 공격력 +30)\n";
+    cout << "기본 공격 습득!\n";
     cout << "스킬 습득!\n";
 }
 
 Archer::Archer(std::string name) : Character(name)
 {
     this->job = "궁수";
-    this->baseAttack *= 2;
-    cout << "초보 탈락 궁수 합격. (공격력 2배.)\n";
-    cout << "공격 습득!\n";
+    this->health -= 100;
+    this->maxhealth -= 100;
+    this->baseAttack += 40;
+    cout << "멀리서 적을 공격하는 궁수의 화살은 매우 강력합니다. (HP -100, 공격력 +40 )\n";
+    cout << "기본 공격 습득!\n";
     cout << "스킬 습득!\n";
 }

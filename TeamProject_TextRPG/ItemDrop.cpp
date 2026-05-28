@@ -6,6 +6,8 @@ void ItemDrop::itemDrop(Character* character) {
 	
     int itemDropRoll = RandomMt19937<int>(1, 100);
 	if (itemDropRoll >= 30) {
+        std::cout << "몬스터의 시체를 뒤져보았습니다 ...\n";
+        std::cout << "$T$...$/T$\n";
         std::cout << "몬스터가 아무것도 떨어뜨리지 않았습니다 ...\n";
         return;
 	}
@@ -35,6 +37,8 @@ void ItemDrop::itemDrop(Character* character) {
         itemDropRoll = RandomMt19937<int>(0, 9);
         RawItem droppedItem = itemDB[itemDropRoll];
         character->getInventory()->AddItem(droppedItem.type, droppedItem.name, droppedItem.value, droppedItem.price);
-        std::cout << "몬스터가 [" << droppedItem.name << "]을(를) 떨어뜨렸습니다 ...\n";
+        std::cout << "몬스터의 시체를 뒤져보았습니다 ...$D$\n";
+        std::cout << "$T$...!!!$/T$\n";
+        std::cout << "몬스터가$T$ [" << droppedItem.name << "]을(를)$/T$ 떨어뜨렸습니다 ...!\n";
 }
 
